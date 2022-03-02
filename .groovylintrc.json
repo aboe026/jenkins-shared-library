@@ -1,0 +1,15 @@
+{
+  "extends": "recommended",
+  "rules": {
+    "DuplicateStringLiteral": "off",
+    "DuplicateNumberLiteral": "off",
+    "Indentation": {
+      "spacesPerIndentLevel": 4,
+      "severity": "info"
+    },
+    "LineLength": {
+      "length": 180
+    },
+    "ThrowException": "off"
+  }
+}
