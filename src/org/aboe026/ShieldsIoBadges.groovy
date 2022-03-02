@@ -35,7 +35,7 @@ class ShieldsIoBadges implements Serializable {
         switch (params.status) {
             case Result.SUCCESS.toString():
                 message = 'passing'
-                color = 'green'
+                color = 'brightgreen'
                 break
             case Result.UNSTABLE.toString():
                 message = 'unstable'
