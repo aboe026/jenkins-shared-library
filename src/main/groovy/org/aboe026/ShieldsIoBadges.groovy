@@ -1,5 +1,6 @@
 package org.aboe026
 
+import hudson.model.Result
 import jenkins.plugins.http_request.ResponseContentSupplier
 import net.sf.json.JSONObject
 
@@ -23,29 +24,29 @@ class ShieldsIoBadges implements Serializable {
         ParameterValidator.required(params, 'setBuild', 'status')
         ParameterValidator.required(params, 'setBuild', 'repo')
         ParameterValidator.enumerable(params, 'setBuild', 'status', [
-            hudson.model.Result.ABORTED.toString(),
-            hudson.model.Result.FAILURE.toString(),
-            hudson.model.Result.NOT_BUILT.toString(),
-            hudson.model.Result.SUCCESS.toString(),
-            hudson.model.Result.UNSTABLE.toString(),
+            Result.ABORTED.toString(),
+            Result.FAILURE.toString(),
+            Result.NOT_BUILT.toString(),
+            Result.SUCCESS.toString(),
+            Result.UNSTABLE.toString(),
         ])
         ParameterValidator.applyDefault(params, 'branch', 'main')
         String message = ''
         String color = ''
         switch (params.status) {
-            case hudson.model.Result.SUCCESS.toString():
+            case Result.SUCCESS.toString():
                 message = 'passing'
                 color = 'green'
                 break
-            case hudson.model.Result.UNSTABLE.toString():
+            case Result.UNSTABLE.toString():
                 message = 'unstable'
                 color = 'yellow'
                 break
-            case hudson.model.Result.NOT_BUILT.toString():
+            case Result.NOT_BUILT.toString():
                 message = 'none'
                 color = 'lightgrey'
                 break
-            case hudson.model.Result.ABORTED.toString():
+            case Result.ABORTED.toString():
                 message = 'aborted'
                 color = 'orange'
                 break

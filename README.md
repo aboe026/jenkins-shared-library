@@ -1,6 +1,6 @@
 # jenkins-shared-library
 
-Jenkins CI shared library files
+Jenkins CI shared library files.
 
 ## Lint
 
@@ -12,8 +12,8 @@ If you have [NodeJS](https://nodejs.org/) installed, you can run
 npx npm-groovy-lint
 ```
 
-To keep this repo as light as possible there is no node module configured to run `npm-groovy-lint` through NodeJS, instead linting can be run locally through docker:
+Otherwise if you have [docker](https://www.docker.com/) you can run
 
 ```sh
-
+docker run --rm -v "$PWD":/tmp nvuillam/npm-groovy-lint
 ```
