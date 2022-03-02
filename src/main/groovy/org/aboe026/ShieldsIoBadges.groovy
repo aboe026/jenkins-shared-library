@@ -20,7 +20,7 @@ class ShieldsIoBadges implements Serializable {
         this.setBadgeResultsJob = params.setBadgeResultsJob
     }
 
-    void setBuild(Map params) {
+    void uploadBuildResult(Map params) {
         ParameterValidator.required(params, 'setBuild', 'status')
         ParameterValidator.required(params, 'setBuild', 'repo')
         ParameterValidator.enumerable(params, 'setBuild', 'status', [
@@ -69,7 +69,7 @@ class ShieldsIoBadges implements Serializable {
         )
     }
 
-    void setCoverage(Map params) {
+    void uploadCoverageResult(Map params) {
         ParameterValidator.required(params, 'setCoverage', 'buildUrl')
         ParameterValidator.applyDefault(params, 'credentialsId', 'JENKINS_CREDENTIALS')
 
