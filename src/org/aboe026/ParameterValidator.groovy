@@ -2,7 +2,6 @@ package org.aboe026
 
 /** Validate method Map input parameters
   */
-@CompileDynamic
 class ParameterValidator {
 
     @NonCPS

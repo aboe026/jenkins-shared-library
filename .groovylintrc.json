@@ -1,6 +1,7 @@
 {
   "extends": "recommended",
   "rules": {
+    "CompileStatic": "off",
     "DuplicateStringLiteral": "off",
     "DuplicateNumberLiteral": "off",
     "Indentation": {

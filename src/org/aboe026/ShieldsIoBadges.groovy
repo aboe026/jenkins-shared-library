@@ -6,11 +6,10 @@ import net.sf.json.JSONObject
 
 /** Manage shields.io badge results
   */
-@CompileDynamic
 class ShieldsIoBadges implements Serializable {
 
     private static final long serialVersionUID = 1L
-    WorkflowScript steps
+    Script steps
     String setBadgeResultsJob
 
     ShieldsIoBadges(Map params) {
