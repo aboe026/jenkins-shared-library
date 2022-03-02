@@ -13,7 +13,7 @@ class ParameterValidator {
     }
 
     @NonCPS
-    static void enumerable(Map params, String methodName, String propertyName, String[] allowedValues) {
+    static void enumerable(Map params, String methodName, String propertyName, List<String> allowedValues) {
         def received = params[propertyName] // groovylint-disable-line NoDef, VariableTypeRequired
         if (!allowedValues.contains(received)) {
             throw new Exception("Invalid value \"${received}\" for parameter \"${propertyName}\" with method \"${methodName}\": Must be one of \"${allowedValues.join('|')}\".")
