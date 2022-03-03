@@ -12,6 +12,17 @@ class ShieldsIoBadges implements Serializable {
     Script steps
     String setBadgeResultsJob
 
+    ShieldsIoBadges() {
+        throw new Exception('Empty constructor not valid for ShieldsIoBadges class. Must pass script steps (aka "this") as either a parameter (this) or in a Map (steps: this).')
+    }
+
+    ShieldsIoBadges(Script steps) {
+        if (steps == null) {
+            throw new Exception('Steps passed to ShieldsIoBadges constructor must be non-null.')
+        }
+        this.steps = steps
+    }
+
     ShieldsIoBadges(Map params) {
         ParameterValidator.required(params, Util.extractMethodName(), 'steps')
         this.steps = params.steps
