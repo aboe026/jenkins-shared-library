@@ -21,10 +21,11 @@ class ParameterValidator {
     }
 
     @NonCPS
-    static void applyDefault(Map params, String propertyName, String defaultValue) {
-        if (params[propertyName] == null) {
-            params[propertyName] = defaultValue
+    static String defaultIfNotSet(Map params, String propertyName, String defaultValue) {
+        if (params == null || params[propertyName] == null) {
+            return defaultValue
         }
+        return params[propertyName]
     }
 
 }

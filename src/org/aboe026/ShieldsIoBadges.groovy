@@ -13,10 +13,9 @@ class ShieldsIoBadges implements Serializable {
     String setBadgeResultsJob
 
     ShieldsIoBadges(Map params) {
-        ParameterValidator.required(params, 'ShieldsIoBadges constructor', 'steps')
-        ParameterValidator.applyDefault(params, 'setBadgeResultsJob', '/shields.io-badge-results/set-badge-result')
+        ParameterValidator.required(params, Util.extractMethodName(), 'steps')
         this.steps = params.steps
-        this.setBadgeResultsJob = params.setBadgeResultsJob
+        this.setBadgeResultsJob = ParameterValidator.defaultIfNotSet(params, 'setBadgeResultsJob', '/shields.io-badge-results/set-badge-result')
     }
 
     void uploadBuildResult(Map params) {
@@ -29,7 +28,7 @@ class ShieldsIoBadges implements Serializable {
             Result.SUCCESS.toString(),
             Result.UNSTABLE.toString(),
         ])
-        ParameterValidator.applyDefault(params, 'branch', 'main')
+        String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         String message = ''
         String color = ''
         switch (params.status) {
@@ -58,7 +57,7 @@ class ShieldsIoBadges implements Serializable {
             job: this.setBadgeResultsJob,
             parameters: [
                 this.steps.string(name: 'repo', value: params.repo),
-                this.steps.string(name: 'branch', value: params.branch),
+                this.steps.string(name: 'branch', value: branch),
                 this.steps.string(name: 'label', value: 'build'),
                 this.steps.string(name: 'message', value: message),
                 this.steps.string(name: 'color', value: color),
@@ -70,8 +69,9 @@ class ShieldsIoBadges implements Serializable {
 
     // TODO: other things to upload?
     void uploadCoverageResult(Map params) {
-        ParameterValidator.applyDefault(params, 'branch', 'main')
-        ParameterValidator.applyDefault(params, 'credentialsId', 'JENKINS_CREDENTIALS')
+        ParameterValidator.required(params, Util.extractMethodName(), 'repo')
+        String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
+        String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
 
         println "TEST this.steps.env.BUILD_URL: '${this.steps.env.BUILD_URL}'"
 
@@ -82,7 +82,7 @@ class ShieldsIoBadges implements Serializable {
         URL coverageUrl = new URL(buildUrl.protocol(), buildUrl.host(), buildUrl.port(), buildUrl.path() + '/cobertura/api/json?depth=2', null)
 
         ResponseContentSupplier response
-        DynamicSecret.asVariable(this.steps, params.credentialsId) { String secretVariable ->
+        DynamicSecret.asVariable(this.steps, credentialsId) { String secretVariable ->
             response = this.steps.httpRequest(
                 url: coverageUrl,
                 authentication: secretVariable
@@ -101,8 +101,116 @@ class ShieldsIoBadges implements Serializable {
         // numeratorTotal -= 100
         BigDecimal overallCoverage = numeratorTotal / denominatorTotal
         println "TEST overallCoverage: '${overallCoverage}'"
-        String percentage = "${Math.round(Math.floor(overallCoverage * 100))}%"
+        int percentage = Math.round(Math.floor(overallCoverage * 100))
         println "TEST percent: '${percentage}'"
+        String color = ''
+        switch (true) {
+            case percentage = 100:
+                color = Color.BRIGHT_GREEN
+                break
+            case percentage >= 90:
+                color = Color.GREEN
+                break
+            case percentage >= 80:
+                color = Color.YELLOW_GREEN
+                break
+            case percentage >= 70:
+                color = Color.YELLOW
+                break
+            case percentage >= 60:
+                color = Color.ORANGE
+                break
+            default:
+                color = Color.RED
+        }
+        this.steps.build(
+            job: this.setBadgeResultsJob,
+            parameters: [
+                this.steps.string(name: 'repo', value: params.repo),
+                this.steps.string(name: 'branch', value: branch),
+                this.steps.string(name: 'label', value: 'coverage'),
+                this.steps.string(name: 'message', value: "${percentage}%"),
+                this.steps.string(name: 'color', value: color),
+            ],
+            quietPeriod: 0,
+            wait: true
+        )
     }
+
+}
+
+enum Color {
+
+  BRIGHT_GREEN {
+
+    @Override
+    String toString() {
+      return 'brightgreen'
+    }
+
+  },
+
+  GREEN {
+
+    @Override
+    String toString() {
+      return 'green'
+    }
+
+  },
+
+  YELLOW_GREEN {
+
+    @Override
+    String toString() {
+      return 'yellowgreen'
+    }
+
+  },
+
+  YELLOW {
+
+    @Override
+    String toString() {
+      return 'yellow'
+    }
+
+  },
+
+  ORANGE {
+
+    @Override
+    String toString() {
+      return 'orange'
+    }
+
+  },
+
+  RED {
+
+    @Override
+    String toString() {
+      return 'red'
+    }
+
+  },
+
+  BLUE {
+
+    @Override
+    String toString() {
+      return 'blue'
+    }
+
+  },
+
+  LIGHT_GREY {
+
+    @Override
+    String toString() {
+      return 'lightgrey'
+    }
+
+  }
 
 }
