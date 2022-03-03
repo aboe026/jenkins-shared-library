@@ -70,11 +70,15 @@ class ShieldsIoBadges implements Serializable {
 
     // TODO: other things to upload?
     void uploadCoverageResult(Map params) {
-        ParameterValidator.required(params, Util.extractMethodName(), 'buildUrl')
         ParameterValidator.applyDefault(params, 'branch', 'main')
         ParameterValidator.applyDefault(params, 'credentialsId', 'JENKINS_CREDENTIALS')
 
-        URL buildUrl = new URL(params.buildUrl)
+        println "TEST this.steps.env.BUILD_URL: '${this.steps.env.BUILD_URL}'"
+
+        println 'TEST params:'
+        println params
+
+        URL buildUrl = new URL(this.steps.env.BUILD_URL)
         URL coverageUrl = new URL(buildUrl.protocol(), buildUrl.host(), buildUrl.port(), buildUrl.path() + '/cobertura/api/json?depth=2', null)
 
         ResponseContentSupplier response
