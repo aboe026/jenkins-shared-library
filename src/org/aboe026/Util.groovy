@@ -6,6 +6,7 @@ import org.codehaus.groovy.runtime.StackTraceUtils
   */
 class Util {
 
+    @NonCPS
     static String extractMethodName() {
         Throwable marker = new Throwable()
         return StackTraceUtils.sanitize(marker).stackTrace[1].methodName
