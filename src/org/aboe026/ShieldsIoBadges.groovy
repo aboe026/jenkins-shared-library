@@ -90,7 +90,7 @@ class ShieldsIoBadges implements Serializable {
     // TODO: other things to upload?
     void uploadCoverageResult(Map params) {
         println 'TEST uploadCoverageResult'
-        ParameterValidator.required(params, Util.extractMethodName(), 'repo')
+        ParameterValidator.required(params, Util.getMethodName(), 'repo')
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
 
@@ -100,7 +100,7 @@ class ShieldsIoBadges implements Serializable {
         println params
 
         URL buildUrl = new URL(this.steps.env.BUILD_URL)
-        URL coverageUrl = new URL(buildUrl.protocol(), buildUrl.host(), buildUrl.port(), buildUrl.path() + '/cobertura/api/json?depth=2', null)
+        URL coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + '/cobertura/api/json?depth=2', null)
 
         ResponseContentSupplier response
         DynamicSecret.asVariable(this.steps, credentialsId) { String secretVariable ->

@@ -7,11 +7,15 @@ import org.codehaus.groovy.runtime.StackTraceUtils
 class Util {
 
     @NonCPS
-    static String extractMethodName() {
-        Throwable marker = new Throwable()
-        println 'TEST extractMethodName StackTraceUtils.sanitize(marker):'
-        println StackTraceUtils.sanitize(marker).stackTrace
-        return StackTraceUtils.sanitize(marker).stackTrace[1].methodName
+    static String getMethodName() {
+        // Throwable marker = new Throwable()
+        // println 'TEST extractMethodName StackTraceUtils.sanitize(marker):'
+        // println StackTraceUtils.sanitize(marker).stackTrace
+        // return StackTraceUtils.sanitize(marker).stackTrace[1].methodName
+    return new Object() { }
+      .getClass()
+      .getEnclosingMethod()
+      .getName()
     }
 
 }

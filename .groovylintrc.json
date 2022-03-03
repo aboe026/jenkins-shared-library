@@ -12,6 +12,8 @@
       "length": 180
     },
     "NestedBlockDepth": "off",
-    "ThrowException": "off"
+    "ThrowException": "off",
+    "UnnecessaryGetter": "off",
+    "UnnecessaryInstantiationToGetClass": "off"
   }
 }
