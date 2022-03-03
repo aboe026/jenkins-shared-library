@@ -24,15 +24,15 @@ class ShieldsIoBadges implements Serializable {
     }
 
     ShieldsIoBadges(Map params) {
-        ParameterValidator.required(params, Util.extractMethodName(), 'steps', true)
+        ParameterValidator.required(params, 'ShieldsIoBadges', 'steps', true)
         this.steps = params.steps
         this.setBadgeResultsJob = ParameterValidator.defaultIfNotSet(params, 'setBadgeResultsJob', '/shields.io-badge-results/set-badge-result')
     }
 
     void uploadBuildResult(Map params) {
-        ParameterValidator.required(params, Util.extractMethodName(), 'status')
-        ParameterValidator.required(params, Util.extractMethodName(), 'repo')
-        ParameterValidator.enumerable(params, Util.extractMethodName(), 'status', [
+        ParameterValidator.required(params, 'uploadBuildResult', 'status')
+        ParameterValidator.required(params, 'uploadBuildResult', 'repo')
+        ParameterValidator.enumerable(params, 'uploadBuildResult', 'status', [
             Result.ABORTED.toString(),
             Result.FAILURE.toString(),
             Result.NOT_BUILT.toString(),
