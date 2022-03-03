@@ -6,9 +6,11 @@ class ParameterValidator {
 
     @NonCPS
     static void required(Map params, String methodName, String propertyName) {
-        def received = params[propertyName] // groovylint-disable-line NoDef, VariableTypeRequired
-        if (received == null) {
-            throw new Exception("Invalid value \"${received}\" for parameter \"${propertyName}\" with method \"${methodName}\": Must be non-null.")
+        if (!params) {
+            throw new Exception("Invalid parameter \"null\" passed to \"${methodName}\" method: Must be Map with at least \"${propertyName}\" property defined.")
+        }
+        if (params[propertyName] == null) {
+            throw new Exception("Invalid parameter passed to \"${methodName}\" method: Must have property \"${propertyName}\" with non-null value.")
         }
     }
 
