@@ -105,9 +105,13 @@ class ShieldsIoBadges implements Serializable {
 
         ResponseContentSupplier response = this.steps.httpRequest(
             url: coverageUrl,
-            authentication: credentialsId
+            authentication: credentialsId,
+            quiet: true
         )
-        JSONObject coverageJson = this.steps.readJSON text: response.content
+        println 'TEST response.content:'
+        println response.content
+        def coverageJson = this.steps.readJSON text: response.content
+        println "TEST coverageJson.getClass(): '${coverageJson.getClass()}'"
         println 'TEST coverageJson'
         println coverageJson
 
