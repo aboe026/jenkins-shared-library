@@ -21,6 +21,15 @@ class ShieldsIoBadges implements Serializable {
             throw new Exception('Steps passed to ShieldsIoBadges constructor must be non-null.')
         }
         this.steps = steps
+        this.setBadgeResultsJob = '/shields.io-badge-results/set-badge-result'
+    }
+
+    ShieldsIoBadges(Script steps, String setBadgeResultsJob) {
+        if (steps == null) {
+            throw new Exception('Steps passed to ShieldsIoBadges constructor must be non-null.')
+        }
+        this.steps = steps
+        this.setBadgeResultsJob = setBadgeResultsJob != null ? setBadgeResultsJob : '/shields.io-badge-results/set-badge-result'
     }
 
     ShieldsIoBadges(Map params) {
