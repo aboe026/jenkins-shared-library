@@ -102,13 +102,10 @@ class ShieldsIoBadges implements Serializable {
         URL buildUrl = new URL(this.steps.env.BUILD_URL)
         URL coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + '/cobertura/api/json?depth=2', null)
 
-        ResponseContentSupplier response
-        DynamicSecret.asVariable(this.steps, credentialsId) { String secretVariable ->
-            response = this.steps.httpRequest(
-                url: coverageUrl,
-                authentication: secretVariable
-            )
-        }
+        ResponseContentSupplier response = response = this.steps.httpRequest(
+            url: coverageUrl,
+            authentication: credentialsId
+        )
         JSONObject coverageJson = this.steps.readJSON text: response.content
         println 'TEST coverageJson'
         println coverageJson
