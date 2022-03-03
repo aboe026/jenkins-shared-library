@@ -11,6 +11,7 @@
     "LineLength": {
       "length": 180
     },
+    "NestedBlockDepth": "off",
     "ThrowException": "off"
   }
 }

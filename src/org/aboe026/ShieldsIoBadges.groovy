@@ -20,9 +20,9 @@ class ShieldsIoBadges implements Serializable {
     }
 
     void uploadBuildResult(Map params) {
-        ParameterValidator.required(params, 'setBuild', 'status')
-        ParameterValidator.required(params, 'setBuild', 'repo')
-        ParameterValidator.enumerable(params, 'setBuild', 'status', [
+        ParameterValidator.required(params, Util.extractMethodName(), 'status')
+        ParameterValidator.required(params, Util.extractMethodName(), 'repo')
+        ParameterValidator.enumerable(params, Util.extractMethodName(), 'status', [
             Result.ABORTED.toString(),
             Result.FAILURE.toString(),
             Result.NOT_BUILT.toString(),
@@ -68,8 +68,10 @@ class ShieldsIoBadges implements Serializable {
         )
     }
 
+    // TODO: other things to upload?
     void uploadCoverageResult(Map params) {
-        ParameterValidator.required(params, 'setCoverage', 'buildUrl')
+        ParameterValidator.required(params, Util.extractMethodName(), 'buildUrl')
+        ParameterValidator.applyDefault(params, 'branch', 'main')
         ParameterValidator.applyDefault(params, 'credentialsId', 'JENKINS_CREDENTIALS')
 
         URL buildUrl = new URL(params.buildUrl)
