@@ -101,7 +101,7 @@ class ShieldsIoBadges implements Serializable {
         println params
 
         URL buildUrl = new URL(this.steps.env.BUILD_URL)
-        URL coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + '/cobertura/api/json?depth=2', null)
+        String coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + '/cobertura/api/json?depth=2', null).toString()
 
         ResponseContentSupplier response = response = this.steps.httpRequest(
             url: coverageUrl,
