@@ -8,11 +8,15 @@ class Util {
 
     @NonCPS
     static String getMethodName() {
-        // Throwable marker = new Throwable()
-        // println 'TEST extractMethodName StackTraceUtils.sanitize(marker):'
-        // println StackTraceUtils.sanitize(marker).stackTrace
-        // return StackTraceUtils.sanitize(marker).stackTrace[1].methodName
-        return Thread.currentThread().getStackTrace()[1].getMethodName()
+        String methodName = ''
+        StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace()
+        for (int i = 0; i < stacktrace.length; i++) {
+            if (stacktrace[i].getMethodName() == 'getMethodName') {
+                methodName = stacktrace[i + 1].getMethodName()
+                break
+            }
+        }
+        return methodName
     }
 
 }
