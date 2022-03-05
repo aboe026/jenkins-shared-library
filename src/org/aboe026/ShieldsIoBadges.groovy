@@ -39,6 +39,7 @@ class ShieldsIoBadges implements Serializable {
     }
 
     void uploadBuildResult(Map params) {
+        println 'TEST uploadBuildResult'
         ParameterValidator.required(params, 'uploadBuildResult', 'status')
         ParameterValidator.required(params, 'uploadBuildResult', 'repo')
         ParameterValidator.enumerable(params, 'uploadBuildResult', 'status', [
