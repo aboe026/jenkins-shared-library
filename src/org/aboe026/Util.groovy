@@ -13,7 +13,7 @@ class Util {
         // println StackTraceUtils.sanitize(marker).stackTrace
         // return StackTraceUtils.sanitize(marker).stackTrace[1].methodName
       Throwable marker = new Throwable()
-      return StackTraceUtils.sanitize(marker).stackTrace[1].methodName
+      return StackTraceUtils.sanitize(marker).stackTrace[2].methodName
     }
 
 }
