@@ -4,6 +4,8 @@ import hudson.model.Result
 import jenkins.plugins.http_request.ResponseContentSupplier
 import net.sf.json.JSONObject
 
+import org.codehaus.groovy.runtime.StackTraceUtils
+
 /** Manage shields.io badge results
   */
 class ShieldsIoBadges implements Serializable {
