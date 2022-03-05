@@ -12,11 +12,8 @@ class Util {
         // println 'TEST extractMethodName StackTraceUtils.sanitize(marker):'
         // println StackTraceUtils.sanitize(marker).stackTrace
         // return StackTraceUtils.sanitize(marker).stackTrace[1].methodName
-    return new Object() { }
-      .getClass()
-      .getEnclosingMethod()
-      .getEnclosingMethod()
-      .getName()
+      Throwable marker = new Throwable()
+      return StackTraceUtils.sanitize(marker).stackTrace[1].methodName
     }
 
 }
