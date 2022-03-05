@@ -120,113 +120,114 @@ class ShieldsIoBadges implements Serializable {
         this.steps.println "TEST before switch"
         switch (percentage) {
             case 100:
-                color = Color.BRIGHT_GREEN
+                color = 'brightgreen' // color = Color.BRIGHT_GREEN
                 break
             case 90..100:
-                color = Color.GREEN
+                color = 'green' // color = Color.GREEN
                 break
             case 80..90:
-                color = Color.YELLOW_GREEN
+                color = 'yellowgreen' // color = Color.YELLOW_GREEN
                 break
             case 70..80:
-                color = Color.YELLOW
+                color = 'yellow' // color = Color.YELLOW
                 break
             case 60..70:
-                color = Color.ORANGE
+                color = 'orange' // color = Color.ORANGE
                 break
             default:
-                color = Color.RED
+                color = 'red' // color = Color.RED
                 break
         }
         this.steps.println 'TEST after switch'
-        this.steps.build(
-            job: this.setBadgeResultsJob,
-            parameters: [
-                this.steps.string(name: 'repo', value: params.repo),
-                this.steps.string(name: 'branch', value: branch),
-                this.steps.string(name: 'label', value: 'coverage'),
-                this.steps.string(name: 'message', value: "${percentage}%"),
-                this.steps.string(name: 'color', value: color),
-            ],
-            quietPeriod: 0,
-            wait: true
-        )
+        this.steps.println "TEST color: '${color}'"
+        // this.steps.build(
+        //     job: this.setBadgeResultsJob,
+        //     parameters: [
+        //         this.steps.string(name: 'repo', value: params.repo),
+        //         this.steps.string(name: 'branch', value: branch),
+        //         this.steps.string(name: 'label', value: 'coverage'),
+        //         this.steps.string(name: 'message', value: "${percentage}%"),
+        //         this.steps.string(name: 'color', value: color),
+        //     ],
+        //     quietPeriod: 0,
+        //     wait: true
+        // )
     }
 
 }
 
-enum Color {
+// enum Color {
 
-  BRIGHT_GREEN {
+//   BRIGHT_GREEN {
 
-    @Override
-    String toString() {
-      return 'brightgreen'
-    }
+//     @Override
+//     String toString() {
+//       return 'brightgreen'
+//     }
 
-  },
+//   },
 
-  GREEN {
+//   GREEN {
 
-    @Override
-    String toString() {
-      return 'green'
-    }
+//     @Override
+//     String toString() {
+//       return 'green'
+//     }
 
-  },
+//   },
 
-  YELLOW_GREEN {
+//   YELLOW_GREEN {
 
-    @Override
-    String toString() {
-      return 'yellowgreen'
-    }
+//     @Override
+//     String toString() {
+//       return 'yellowgreen'
+//     }
 
-  },
+//   },
 
-  YELLOW {
+//   YELLOW {
 
-    @Override
-    String toString() {
-      return 'yellow'
-    }
+//     @Override
+//     String toString() {
+//       return 'yellow'
+//     }
 
-  },
+//   },
 
-  ORANGE {
+//   ORANGE {
 
-    @Override
-    String toString() {
-      return 'orange'
-    }
+//     @Override
+//     String toString() {
+//       return 'orange'
+//     }
 
-  },
+//   },
 
-  RED {
+//   RED {
 
-    @Override
-    String toString() {
-      return 'red'
-    }
+//     @Override
+//     String toString() {
+//       return 'red'
+//     }
 
-  },
+//   },
 
-  BLUE {
+//   BLUE {
 
-    @Override
-    String toString() {
-      return 'blue'
-    }
+//     @Override
+//     String toString() {
+//       return 'blue'
+//     }
 
-  },
+//   },
 
-  LIGHT_GREY {
+//   LIGHT_GREY {
 
-    @Override
-    String toString() {
-      return 'lightgrey'
-    }
+//     @Override
+//     String toString() {
+//       return 'lightgrey'
+//     }
 
-  }
+//   }
 
-}
+// }
