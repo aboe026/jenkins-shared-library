@@ -16,7 +16,7 @@ class Util {
             steps.println "TEST stacktrace[i].getMethodName(): '${stacktrace[i].getMethodName()}'"
             if (stacktrace[i].getMethodName() == 'getMethodName') {
                 methodName = stacktrace[i + 1].getMethodName()
-                break
+                // break
             }
         }
         return methodName
