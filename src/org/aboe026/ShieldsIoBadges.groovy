@@ -136,6 +136,7 @@ class ShieldsIoBadges implements Serializable {
                 break
             default:
                 color = Color.RED
+                break
         }
         this.steps.println 'TEST after switch'
         this.steps.build(
