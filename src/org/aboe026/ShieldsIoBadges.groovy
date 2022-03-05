@@ -162,6 +162,7 @@ enum Color {
   BRIGHT_GREEN {
 
     @Override
+    @NonCPS
     String toString() {
       return 'brightgreen'
     }
@@ -171,6 +172,7 @@ enum Color {
   GREEN {
 
     @Override
+    @NonCPS
     String toString() {
       return 'green'
     }
@@ -180,6 +182,7 @@ enum Color {
   YELLOW_GREEN {
 
     @Override
+    @NonCPS
     String toString() {
       return 'yellowgreen'
     }
@@ -189,6 +192,7 @@ enum Color {
   YELLOW {
 
     @Override
+    @NonCPS
     String toString() {
       return 'yellow'
     }
@@ -198,6 +202,7 @@ enum Color {
   ORANGE {
 
     @Override
+    @NonCPS
     String toString() {
       return 'orange'
     }
@@ -207,6 +212,7 @@ enum Color {
   RED {
 
     @Override
+    @NonCPS
     String toString() {
       return 'red'
     }
@@ -216,6 +222,7 @@ enum Color {
   BLUE {
 
     @Override
+    @NonCPS
     String toString() {
       return 'blue'
     }
@@ -225,6 +232,7 @@ enum Color {
   LIGHT_GREY {
 
     @Override
+    @NonCPS
     String toString() {
       return 'lightgrey'
     }
