@@ -120,22 +120,22 @@ class ShieldsIoBadges implements Serializable {
         this.steps.println "TEST before switch"
         switch (percentage) {
             case 100:
-                color = Color.BRIGHT_GREEN
+                color = 'brightgreen' // color = Color.BRIGHT_GREEN
                 break
             case 90..100:
-                color = Color.GREEN
+                color = 'green' // color = Color.GREEN
                 break
             case 80..90:
-                color = Color.YELLOW_GREEN
+                color = 'yellowgreen' // color = Color.YELLOW_GREEN
                 break
             case 70..80:
-                color = Color.YELLOW
+                color = 'yellow' // color = Color.YELLOW
                 break
             case 60..70:
-                color = Color.ORANGE
+                color = 'orange' // color = Color.ORANGE
                 break
             default:
-                color = Color.RED
+                color = 'red' // color = Color.RED
                 break
         }
         this.steps.println 'TEST after switch'
