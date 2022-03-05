@@ -95,38 +95,15 @@ class ShieldsIoBadges implements Serializable {
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
 
-        this.steps.println "TEST this.steps.env.BUILD_URL: '${this.steps.env.BUILD_URL}'"
-
-        this.steps.println 'TEST params:'
-        this.steps.println params
-
         URL buildUrl = new URL(this.steps.env.BUILD_URL)
         String coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + '/cobertura/api/json?depth=2', null)
 
-        this.steps.println "TEST coverageUrl '${coverageUrl}'"
         ResponseContentSupplier response = this.steps.httpRequest(
             url: coverageUrl,
             authentication: credentialsId,
             quiet: true
         )
-        this.steps.println 'TEST response.content:'
-        this.steps.println response.content
-        // // TODO: why is this giving errror? surround in try/catch? comment out so response.content prints?
-        def coverageJson
-        try {
-            this.steps.println 'TEST before readJSON'
-            coverageJson = this.steps.readJSON text: response.content
-            this.steps.println 'TEST after readJSON'
-            this.steps.println "TEST coverageJson.getClass(): '${coverageJson.getClass()}'"
-        } catch (err) {
-            this.steps.println(err.toString());
-            this.steps.println(err.getMessage());
-            this.steps.println(err.getStackTrace());
-            throw err
-        }
-        this.steps.println "TEST coverageJson.getClass(): '${coverageJson.getClass()}'"
-        this.steps.println 'TEST coverageJson'
-        this.steps.println coverageJson
+        JSONObject coverageJson = this.steps.readJSON text: response.content
 
         int numeratorTotal = 0
         int denominatorTotal = 0
@@ -140,25 +117,34 @@ class ShieldsIoBadges implements Serializable {
         int percentage = Math.round(Math.floor(overallCoverage * 100))
         this.steps.println "TEST percent: '${percentage}'"
         String color = ''
-        switch (true) {
-            case percentage = 100:
-                color = Color.BRIGHT_GREEN
-                break
-            case percentage >= 90:
-                color = Color.GREEN
-                break
-            case percentage >= 80:
-                color = Color.YELLOW_GREEN
-                break
-            case percentage >= 70:
-                color = Color.YELLOW
-                break
-            case percentage >= 60:
-                color = Color.ORANGE
-                break
-            default:
-                color = Color.RED
+        this.steps.println "TEST before switch"
+        try {
+            switch (true) {
+                case percentage = 100:
+                    color = Color.BRIGHT_GREEN
+                    break
+                case percentage >= 90:
+                    color = Color.GREEN
+                    break
+                case percentage >= 80:
+                    color = Color.YELLOW_GREEN
+                    break
+                case percentage >= 70:
+                    color = Color.YELLOW
+                    break
+                case percentage >= 60:
+                    color = Color.ORANGE
+                    break
+                default:
+                    color = Color.RED
+            }
+        } catch (err) {
+            this.steps.println(err.toString());
+            this.steps.println(err.getMessage());
+            this.steps.println(err.getStackTrace());
+            throw err
         }
+        this.steps.println "TEST after switch"
         this.steps.build(
             job: this.setBadgeResultsJob,
             parameters: [
