@@ -11,7 +11,7 @@ class Util {
         def temp = Thread.currentThread().getStackTrace()
         temp.each { tem ->
             steps.println "TEST tem.getMethodName: '${tem.getMethodName()}'"
-            [3].getMethodName())
+            // [3].getMethodName())
         }
         return ''
     }
