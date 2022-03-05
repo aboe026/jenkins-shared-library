@@ -116,6 +116,7 @@ class ShieldsIoBadges implements Serializable {
         this.steps.println "TEST overallCoverage: '${overallCoverage}'"
         int percentage = Math.round(Math.floor(overallCoverage * 100))
         this.steps.println "TEST percent: '${percentage}'"
+        this.steps.println "TEST Color.BRIGHT_GREEN: '${Color.BRIGHT_GREEN}'"
         String color = ''
         this.steps.println "TEST before switch"
         switch (percentage) {
