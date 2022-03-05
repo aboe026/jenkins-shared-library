@@ -4,8 +4,6 @@ import hudson.model.Result
 import jenkins.plugins.http_request.ResponseContentSupplier
 import net.sf.json.JSONObject
 
-import org.codehaus.groovy.runtime.StackTraceUtils
-
 /** Manage shields.io badge results
   */
 class ShieldsIoBadges implements Serializable {
@@ -111,8 +109,6 @@ class ShieldsIoBadges implements Serializable {
             numeratorTotal += result.numerator
             denominatorTotal += result.denominator
         }
-        this.steps.println "TEST denominatorTotal: '${denominatorTotal}'"
-        numeratorTotal -= 100
         BigDecimal overallCoverage = numeratorTotal / denominatorTotal
         int percentage = Math.round(Math.floor(overallCoverage * 100))
         String color = ''
@@ -154,84 +150,84 @@ class ShieldsIoBadges implements Serializable {
 
 enum Color {
 
-  BRIGHT_GREEN {
+    BRIGHT_GREEN {
 
-    @Override
-    @NonCPS
-    String toString() {
-      return 'brightgreen'
+        @Override
+        @NonCPS
+        String toString() {
+            return 'brightgreen'
+        }
+
+    },
+
+    GREEN {
+
+        @Override
+        @NonCPS
+        String toString() {
+            return 'green'
+        }
+
+    },
+
+    YELLOW_GREEN {
+
+        @Override
+        @NonCPS
+        String toString() {
+            return 'yellowgreen'
+        }
+
+    },
+
+    YELLOW {
+
+        @Override
+        @NonCPS
+        String toString() {
+            return 'yellow'
+        }
+
+    },
+
+    ORANGE {
+
+        @Override
+        @NonCPS
+        String toString() {
+            return 'orange'
+        }
+
+    },
+
+    RED {
+
+        @Override
+        @NonCPS
+        String toString() {
+            return 'red'
+        }
+
+    },
+
+    BLUE {
+
+        @Override
+        @NonCPS
+        String toString() {
+            return 'blue'
+        }
+
+    },
+
+    LIGHT_GREY {
+
+        @Override
+        @NonCPS
+        String toString() {
+            return 'lightgrey'
+        }
+
     }
-
-  },
-
-  GREEN {
-
-    @Override
-    @NonCPS
-    String toString() {
-      return 'green'
-    }
-
-  },
-
-  YELLOW_GREEN {
-
-    @Override
-    @NonCPS
-    String toString() {
-      return 'yellowgreen'
-    }
-
-  },
-
-  YELLOW {
-
-    @Override
-    @NonCPS
-    String toString() {
-      return 'yellow'
-    }
-
-  },
-
-  ORANGE {
-
-    @Override
-    @NonCPS
-    String toString() {
-      return 'orange'
-    }
-
-  },
-
-  RED {
-
-    @Override
-    @NonCPS
-    String toString() {
-      return 'red'
-    }
-
-  },
-
-  BLUE {
-
-    @Override
-    @NonCPS
-    String toString() {
-      return 'blue'
-    }
-
-  },
-
-  LIGHT_GREY {
-
-    @Override
-    @NonCPS
-    String toString() {
-      return 'lightgrey'
-    }
-
-  }
 
 }
