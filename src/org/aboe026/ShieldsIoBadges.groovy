@@ -103,6 +103,7 @@ class ShieldsIoBadges implements Serializable {
         URL buildUrl = new URL(this.steps.env.BUILD_URL)
         String coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + '/cobertura/api/json?depth=2', null).toString()
 
+        println "TEST coverageUrl '${coverageUrl}'"
         ResponseContentSupplier response = this.steps.httpRequest(
             url: coverageUrl,
             authentication: credentialsId,
@@ -111,64 +112,64 @@ class ShieldsIoBadges implements Serializable {
         println 'TEST response.content:'
         println response.content
         // TODO: why is this giving errror? surround in try/catch? comment out so response.content prints?
-        def coverageJson
-        try {
-          printlnt 'TEST before readJSON'
-          coverageJson = this.steps.readJSON text: response.content
-          printlnt 'TEST after readJSON'
-          println "TEST coverageJson.getClass(): '${coverageJson.getClass()}'"
-        } catch (err) {
-          println(err.toString());
-          println(err.getMessage());
-          println(err.getStackTrace());
-        }
-        println "TEST coverageJson.getClass(): '${coverageJson.getClass()}'"
-        println 'TEST coverageJson'
-        println coverageJson
+        // def coverageJson
+        // try {
+        //     printlnt 'TEST before readJSON'
+        //     coverageJson = this.steps.readJSON text: response.content
+        //     printlnt 'TEST after readJSON'
+        //     println "TEST coverageJson.getClass(): '${coverageJson.getClass()}'"
+        // } catch (err) {
+        //     println(err.toString());
+        //     println(err.getMessage());
+        //     println(err.getStackTrace());
+        // }
+        // println "TEST coverageJson.getClass(): '${coverageJson.getClass()}'"
+        // println 'TEST coverageJson'
+        // println coverageJson
 
-        int numeratorTotal = 0
-        int denominatorTotal = 0
-        coverageJson.results.elements.each { result ->
-            numeratorTotal += result.numerator
-            denominatorTotal += result.denominator
-        }
-        // numeratorTotal -= 100
-        BigDecimal overallCoverage = numeratorTotal / denominatorTotal
-        println "TEST overallCoverage: '${overallCoverage}'"
-        int percentage = Math.round(Math.floor(overallCoverage * 100))
-        println "TEST percent: '${percentage}'"
-        String color = ''
-        switch (true) {
-            case percentage = 100:
-                color = Color.BRIGHT_GREEN
-                break
-            case percentage >= 90:
-                color = Color.GREEN
-                break
-            case percentage >= 80:
-                color = Color.YELLOW_GREEN
-                break
-            case percentage >= 70:
-                color = Color.YELLOW
-                break
-            case percentage >= 60:
-                color = Color.ORANGE
-                break
-            default:
-                color = Color.RED
-        }
-        this.steps.build(
-            job: this.setBadgeResultsJob,
-            parameters: [
-                this.steps.string(name: 'repo', value: params.repo),
-                this.steps.string(name: 'branch', value: branch),
-                this.steps.string(name: 'label', value: 'coverage'),
-                this.steps.string(name: 'message', value: "${percentage}%"),
-                this.steps.string(name: 'color', value: color),
-            ],
-            quietPeriod: 0,
-            wait: true
-        )
+        // int numeratorTotal = 0
+        // int denominatorTotal = 0
+        // coverageJson.results.elements.each { result ->
+        //     numeratorTotal += result.numerator
+        //     denominatorTotal += result.denominator
+        // }
+        // // numeratorTotal -= 100
+        // BigDecimal overallCoverage = numeratorTotal / denominatorTotal
+        // println "TEST overallCoverage: '${overallCoverage}'"
+        // int percentage = Math.round(Math.floor(overallCoverage * 100))
+        // println "TEST percent: '${percentage}'"
+        // String color = ''
+        // switch (true) {
+        //     case percentage = 100:
+        //         color = Color.BRIGHT_GREEN
+        //         break
+        //     case percentage >= 90:
+        //         color = Color.GREEN
+        //         break
+        //     case percentage >= 80:
+        //         color = Color.YELLOW_GREEN
+        //         break
+        //     case percentage >= 70:
+        //         color = Color.YELLOW
+        //         break
+        //     case percentage >= 60:
+        //         color = Color.ORANGE
+        //         break
+        //     default:
+        //         color = Color.RED
+        // }
+        // this.steps.build(
+        //     job: this.setBadgeResultsJob,
+        //     parameters: [
+        //         this.steps.string(name: 'repo', value: params.repo),
+        //         this.steps.string(name: 'branch', value: branch),
+        //         this.steps.string(name: 'label', value: 'coverage'),
+        //         this.steps.string(name: 'message', value: "${percentage}%"),
+        //         this.steps.string(name: 'color', value: color),
+        //     ],
+        //     quietPeriod: 0,
+        //     wait: true
+        // )
     }
 
 }
