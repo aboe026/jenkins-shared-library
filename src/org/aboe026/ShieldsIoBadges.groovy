@@ -91,57 +91,41 @@ class ShieldsIoBadges implements Serializable {
 
     // TODO: other things to upload?
     void uploadCoverageResult(Map params) {
-        // StackWalker walker = StackWalker.getInstance()
-        // Optional<String> methodName = walker.walk(frames -> frames
-        // .findFirst()
-        // .map(StackWalker.StackFrame::getMethodName))
+        ParameterValidator.required(params, 'uploadCoverageResult', 'repo')
+        String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
+        String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
 
-        // def marker = new Throwable()
-        // StackTraceUtils.sanitize(marker).stackTrace.eachWithIndex { e, i ->
-        //     this.steps.println "> $i ${e.toString().padRight(30)} ${e.methodName}"
-        // }
+        this.steps.println "TEST this.steps.env.BUILD_URL: '${this.steps.env.BUILD_URL}'"
 
+        this.steps.println 'TEST params:'
+        this.steps.println params
 
+        URL buildUrl = new URL(this.steps.env.BUILD_URL)
+        String coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + '/cobertura/api/json?depth=2', null)
 
-        // this.steps.println 'TEST uploadCoverageResult'
-        def temp = Util.getMethodName(this.steps)
-        this.steps.println "TEST Util.getMethodName(): '${temp}'"
-
-        // ParameterValidator.required(params, Util.getMethodName(), 'repo')
-        // String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
-        // String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
-
-        // println "TEST this.steps.env.BUILD_URL: '${this.steps.env.BUILD_URL}'"
-
-        // println 'TEST params:'
-        // println params
-
-        // URL buildUrl = new URL(this.steps.env.BUILD_URL)
-        // String coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + '/cobertura/api/json?depth=2', null).toString()
-
-        // println "TEST coverageUrl '${coverageUrl}'"
-        // ResponseContentSupplier response = this.steps.httpRequest(
-        //     url: coverageUrl,
-        //     authentication: credentialsId,
-        //     quiet: true
-        // )
-        // println 'TEST response.content:'
-        // println response.content
+        this.steps.println "TEST coverageUrl '${coverageUrl}'"
+        ResponseContentSupplier response = this.steps.httpRequest(
+            url: coverageUrl,
+            authentication: credentialsId,
+            quiet: true
+        )
+        this.steps.println 'TEST response.content:'
+        this.steps.println response.content
         // // TODO: why is this giving errror? surround in try/catch? comment out so response.content prints?
         // def coverageJson
         // try {
-        //     printlnt 'TEST before readJSON'
+        //     this.steps.printlnt 'TEST before readJSON'
         //     coverageJson = this.steps.readJSON text: response.content
-        //     printlnt 'TEST after readJSON'
-        //     println "TEST coverageJson.getClass(): '${coverageJson.getClass()}'"
+        //     this.steps.printlnt 'TEST after readJSON'
+        //     this.steps.println "TEST coverageJson.getClass(): '${coverageJson.getClass()}'"
         // } catch (err) {
-        //     println(err.toString());
-        //     println(err.getMessage());
-        //     println(err.getStackTrace());
+        //     this.steps.println(err.toString());
+        //     this.steps.println(err.getMessage());
+        //     this.steps.println(err.getStackTrace());
         // }
-        // println "TEST coverageJson.getClass(): '${coverageJson.getClass()}'"
-        // println 'TEST coverageJson'
-        // println coverageJson
+        // this.steps.println "TEST coverageJson.getClass(): '${coverageJson.getClass()}'"
+        // this.steps.println 'TEST coverageJson'
+        // this.steps.println coverageJson
 
         // int numeratorTotal = 0
         // int denominatorTotal = 0
@@ -151,9 +135,9 @@ class ShieldsIoBadges implements Serializable {
         // }
         // // numeratorTotal -= 100
         // BigDecimal overallCoverage = numeratorTotal / denominatorTotal
-        // println "TEST overallCoverage: '${overallCoverage}'"
+        // this.steps.println "TEST overallCoverage: '${overallCoverage}'"
         // int percentage = Math.round(Math.floor(overallCoverage * 100))
-        // println "TEST percent: '${percentage}'"
+        // this.steps.println "TEST percent: '${percentage}'"
         // String color = ''
         // switch (true) {
         //     case percentage = 100:
