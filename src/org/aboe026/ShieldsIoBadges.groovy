@@ -39,7 +39,6 @@ class ShieldsIoBadges implements Serializable {
     }
 
     void uploadBuildResult(Map params) {
-        this.steps.println 'TEST uploadBuildResult'
         ParameterValidator.required(params, 'uploadBuildResult', 'status')
         ParameterValidator.required(params, 'uploadBuildResult', 'repo')
         ParameterValidator.enumerable(params, 'uploadBuildResult', 'status', [
@@ -90,8 +89,8 @@ class ShieldsIoBadges implements Serializable {
 
     // TODO: other things to upload?
     void uploadCoverageResult(Map params) {
-        println 'TEST uploadCoverageResult'
-        // println "TEST Util.getMethodName(): '${Util.getMethodName()}'"
+        this.steps.println 'TEST uploadCoverageResult'
+        this.steps.println "TEST Util.getMethodName(): '${Util.getMethodName()}'"
         // ParameterValidator.required(params, Util.getMethodName(), 'repo')
         // String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         // String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
@@ -110,9 +109,9 @@ class ShieldsIoBadges implements Serializable {
         //     authentication: credentialsId,
         //     quiet: true
         // )
-        println 'TEST response.content:'
+        // println 'TEST response.content:'
         // println response.content
-        // TODO: why is this giving errror? surround in try/catch? comment out so response.content prints?
+        // // TODO: why is this giving errror? surround in try/catch? comment out so response.content prints?
         // def coverageJson
         // try {
         //     printlnt 'TEST before readJSON'
