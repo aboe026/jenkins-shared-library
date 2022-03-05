@@ -12,8 +12,7 @@ class Util {
         // println 'TEST extractMethodName StackTraceUtils.sanitize(marker):'
         // println StackTraceUtils.sanitize(marker).stackTrace
         // return StackTraceUtils.sanitize(marker).stackTrace[1].methodName
-      Throwable marker = new Throwable()
-      return StackTraceUtils.sanitize(marker).stackTrace[2].methodName
+        return Thread.currentThread().getStackTrace()[2].getMethodName()
     }
 
 }
