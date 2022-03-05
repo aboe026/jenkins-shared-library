@@ -90,7 +90,7 @@ class ShieldsIoBadges implements Serializable {
     // TODO: other things to upload?
     void uploadCoverageResult(Map params) {
         this.steps.println 'TEST uploadCoverageResult'
-        def temp = Util.getMethodName()
+        def temp = Util.getMethodName(this.steps)
         this.steps.println "TEST Util.getMethodName(): '${temp}'"
         // ParameterValidator.required(params, Util.getMethodName(), 'repo')
         // String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
