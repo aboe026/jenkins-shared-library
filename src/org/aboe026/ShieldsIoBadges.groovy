@@ -83,11 +83,10 @@ class ShieldsIoBadges implements Serializable {
                 this.steps.string(name: 'color', value: color),
             ],
             quietPeriod: 0,
-            wait: true
+            wait: false
         )
     }
 
-    // TODO: other things to upload?
     void uploadCoverageResult(Map params) {
         ParameterValidator.required(params, 'uploadCoverageResult', 'repo')
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
@@ -142,7 +141,7 @@ class ShieldsIoBadges implements Serializable {
                 this.steps.string(name: 'color', value: color),
             ],
             quietPeriod: 0,
-            wait: true
+            wait: false
         )
     }
 
