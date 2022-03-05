@@ -95,14 +95,17 @@ class ShieldsIoBadges implements Serializable {
         // Optional<String> methodName = walker.walk(frames -> frames
         // .findFirst()
         // .map(StackWalker.StackFrame::getMethodName))
-        def marker = new Throwable()
-        StackTraceUtils.sanitize(marker).stackTrace.eachWithIndex { e, i ->
-            this.steps.println "> $i ${e.toString().padRight(30)} ${e.methodName}"
-        }
+
+        // def marker = new Throwable()
+        // StackTraceUtils.sanitize(marker).stackTrace.eachWithIndex { e, i ->
+        //     this.steps.println "> $i ${e.toString().padRight(30)} ${e.methodName}"
+        // }
+
+
 
         // this.steps.println 'TEST uploadCoverageResult'
-        // def temp = Util.getMethodName(this.steps)
-        // this.steps.println "TEST Util.getMethodName(): '${temp}'"
+        def temp = Util.getMethodName(this.steps)
+        this.steps.println "TEST Util.getMethodName(): '${temp}'"
 
         // ParameterValidator.required(params, Util.getMethodName(), 'repo')
         // String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')

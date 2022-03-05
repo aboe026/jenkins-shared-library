@@ -8,10 +8,9 @@ class Util {
 
     @NonCPS
     static String getMethodName(def steps) {
-        def temp = Thread.currentThread().getStackTrace()
-        temp.each { tem ->
-            steps.println "TEST tem.getMethodName: '${tem.getMethodName()}'"
-            // [3].getMethodName())
+        def marker = new Throwable()
+        StackTraceUtils.sanitize(marker).stackTrace.eachWithIndex { e, i ->
+            steps.println "> $i ${e.toString().padRight(30)} ${e.methodName}"
         }
         return ''
     }
