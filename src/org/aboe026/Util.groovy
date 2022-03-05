@@ -15,6 +15,7 @@ class Util {
     return new Object() { }
       .getClass()
       .getEnclosingMethod()
+      .getEnclosingMethod()
       .getName()
     }
 
