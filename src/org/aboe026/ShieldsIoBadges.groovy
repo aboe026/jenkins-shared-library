@@ -90,27 +90,27 @@ class ShieldsIoBadges implements Serializable {
     // TODO: other things to upload?
     void uploadCoverageResult(Map params) {
         println 'TEST uploadCoverageResult'
-        println "TEST Util.getMethodName(): '${Util.getMethodName()}'"
-        ParameterValidator.required(params, Util.getMethodName(), 'repo')
-        String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
-        String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
+        // println "TEST Util.getMethodName(): '${Util.getMethodName()}'"
+        // ParameterValidator.required(params, Util.getMethodName(), 'repo')
+        // String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
+        // String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
 
-        println "TEST this.steps.env.BUILD_URL: '${this.steps.env.BUILD_URL}'"
+        // println "TEST this.steps.env.BUILD_URL: '${this.steps.env.BUILD_URL}'"
 
-        println 'TEST params:'
-        println params
+        // println 'TEST params:'
+        // println params
 
-        URL buildUrl = new URL(this.steps.env.BUILD_URL)
-        String coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + '/cobertura/api/json?depth=2', null).toString()
+        // URL buildUrl = new URL(this.steps.env.BUILD_URL)
+        // String coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + '/cobertura/api/json?depth=2', null).toString()
 
-        println "TEST coverageUrl '${coverageUrl}'"
-        ResponseContentSupplier response = this.steps.httpRequest(
-            url: coverageUrl,
-            authentication: credentialsId,
-            quiet: true
-        )
+        // println "TEST coverageUrl '${coverageUrl}'"
+        // ResponseContentSupplier response = this.steps.httpRequest(
+        //     url: coverageUrl,
+        //     authentication: credentialsId,
+        //     quiet: true
+        // )
         println 'TEST response.content:'
-        println response.content
+        // println response.content
         // TODO: why is this giving errror? surround in try/catch? comment out so response.content prints?
         // def coverageJson
         // try {
