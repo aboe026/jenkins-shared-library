@@ -114,9 +114,9 @@ class ShieldsIoBadges implements Serializable {
         // // TODO: why is this giving errror? surround in try/catch? comment out so response.content prints?
         def coverageJson
         try {
-            this.steps.printlnt 'TEST before readJSON'
+            this.steps.println 'TEST before readJSON'
             coverageJson = this.steps.readJSON text: response.content
-            this.steps.printlnt 'TEST after readJSON'
+            this.steps.println 'TEST after readJSON'
             this.steps.println "TEST coverageJson.getClass(): '${coverageJson.getClass()}'"
         } catch (err) {
             this.steps.println(err.toString());
