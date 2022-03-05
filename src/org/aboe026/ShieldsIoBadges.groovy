@@ -111,7 +111,8 @@ class ShieldsIoBadges implements Serializable {
             numeratorTotal += result.numerator
             denominatorTotal += result.denominator
         }
-        // numeratorTotal -= 100
+        this.steps.println "TEST denominatorTotal: '${denominatorTotal}'"
+        numeratorTotal -= 100
         BigDecimal overallCoverage = numeratorTotal / denominatorTotal
         int percentage = Math.round(Math.floor(overallCoverage * 100))
         String color = ''
