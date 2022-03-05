@@ -89,9 +89,16 @@ class ShieldsIoBadges implements Serializable {
 
     // TODO: other things to upload?
     void uploadCoverageResult(Map params) {
-        this.steps.println 'TEST uploadCoverageResult'
-        def temp = Util.getMethodName(this.steps)
-        this.steps.println "TEST Util.getMethodName(): '${temp}'"
+        StackWalker walker = StackWalker.getInstance()
+        Optional<String> methodName = walker.walk(frames -> frames
+        .findFirst()
+        .map(StackWalker.StackFrame::getMethodName))
+        println "TEST methodName: '${methodName}'"
+
+        // this.steps.println 'TEST uploadCoverageResult'
+        // def temp = Util.getMethodName(this.steps)
+        // this.steps.println "TEST Util.getMethodName(): '${temp}'"
+
         // ParameterValidator.required(params, Util.getMethodName(), 'repo')
         // String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         // String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
