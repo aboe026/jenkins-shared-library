@@ -113,12 +113,8 @@ class ShieldsIoBadges implements Serializable {
         }
         // numeratorTotal -= 100
         BigDecimal overallCoverage = numeratorTotal / denominatorTotal
-        this.steps.println "TEST overallCoverage: '${overallCoverage}'"
         int percentage = Math.round(Math.floor(overallCoverage * 100))
-        this.steps.println "TEST percent: '${percentage}'"
-        this.steps.println "TEST Color.BRIGHT_GREEN: '${Color.BRIGHT_GREEN}'"
         String color = ''
-        this.steps.println "TEST before switch"
         switch (percentage) {
             case 100:
                 color = Color.BRIGHT_GREEN
@@ -139,20 +135,18 @@ class ShieldsIoBadges implements Serializable {
                 color = Color.RED
                 break
         }
-        this.steps.println 'TEST after switch'
-        this.steps.println "TEST color: '${color}'"
-        // this.steps.build(
-        //     job: this.setBadgeResultsJob,
-        //     parameters: [
-        //         this.steps.string(name: 'repo', value: params.repo),
-        //         this.steps.string(name: 'branch', value: branch),
-        //         this.steps.string(name: 'label', value: 'coverage'),
-        //         this.steps.string(name: 'message', value: "${percentage}%"),
-        //         this.steps.string(name: 'color', value: color),
-        //     ],
-        //     quietPeriod: 0,
-        //     wait: true
-        // )
+        this.steps.build(
+            job: this.setBadgeResultsJob,
+            parameters: [
+                this.steps.string(name: 'repo', value: params.repo),
+                this.steps.string(name: 'branch', value: branch),
+                this.steps.string(name: 'label', value: 'coverage'),
+                this.steps.string(name: 'message', value: "${percentage}%"),
+                this.steps.string(name: 'color', value: color),
+            ],
+            quietPeriod: 0,
+            wait: true
+        )
     }
 
 }
