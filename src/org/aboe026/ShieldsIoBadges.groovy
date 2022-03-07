@@ -12,10 +12,19 @@ class ShieldsIoBadges implements Serializable {
     Script steps
     String setBadgeResultsJob
 
+    // Not allowed, need script steps for method executions
     ShieldsIoBadges() {
         throw new Exception('Empty constructor not valid for ShieldsIoBadges class. Must pass script steps (aka "this") as either a parameter (this) or in a Map (steps: this).')
     }
 
+    /** Can be instantiated in a Jenkinsfile like:
+     *
+     *      @Library('aboe026') _ // groovylint-disable-line VariableName, UnusedVariable
+     *
+     *      import org.aboe026.ShieldsIoBadges
+     *
+     *      def badges = new ShieldsIoBadges(this)
+     */
     ShieldsIoBadges(Script steps) {
         if (steps == null) {
             throw new Exception('Invalid parameter "null" passed to "ShieldsIoBadges" constructor: Must be non-null Script object.')
@@ -24,6 +33,14 @@ class ShieldsIoBadges implements Serializable {
         this.setBadgeResultsJob = '/shields.io-badge-results/set-badge-result'
     }
 
+    /** Can be instantiated in a Jenkinsfile like:
+     *
+     *      @Library('aboe026') _ // groovylint-disable-line VariableName, UnusedVariable
+     *
+     *      import org.aboe026.ShieldsIoBadges
+     *
+     *      def badges = new ShieldsIoBadges(this, '/path/in/jenkins/to/set-badge-result-job')
+     */
     ShieldsIoBadges(Script steps, String setBadgeResultsJob) {
         if (steps == null) {
             throw new Exception('Invalid first parameter "null" passed to "ShieldsIoBadges" constructor: Must be non-null Script object.')
@@ -32,12 +49,33 @@ class ShieldsIoBadges implements Serializable {
         this.setBadgeResultsJob = setBadgeResultsJob != null ? setBadgeResultsJob : '/shields.io-badge-results/set-badge-result'
     }
 
+    /** Can be instantiated in a Jenkinsfile like:
+     *
+     *      @Library('aboe026') _ // groovylint-disable-line VariableName, UnusedVariable
+     *
+     *      import org.aboe026.ShieldsIoBadges
+     *
+     *      def badges = new ShieldsIoBadges(
+     *          steps: this,
+     *          setBadgeResultsJob: '/path/in/jenkins/to/set-badge-result-job'
+     *      )
+     */
     ShieldsIoBadges(Map params) {
-        ParameterValidator.required(params, 'ShieldsIoBadges', 'steps', true)
+        ParameterValidator.required (params, 'ShieldsIoBadges', 'steps', true)
         this.steps = params.steps
         this.setBadgeResultsJob = ParameterValidator.defaultIfNotSet(params, 'setBadgeResultsJob', '/shields.io-badge-results/set-badge-result')
     }
 
+    /* Can be called in Jenkinsfile like:
+     *
+     *     if (env.BRANCH_NAME == 'main') {
+     *         badges.uploadBuildResult(
+     *             repo: 'data-structures',
+     *             status: currentBuild.currentResult,
+     *             branch: env.BRANCH_NAME
+     *         )
+     *     }
+     */
     void uploadBuildResult(Map params) {
         ParameterValidator.required(params, 'uploadBuildResult', 'status')
         ParameterValidator.required(params, 'uploadBuildResult', 'repo')
@@ -87,6 +125,15 @@ class ShieldsIoBadges implements Serializable {
         )
     }
 
+    /* Can be called in Jenkinsfile like:
+     *
+     *     if (env.BRANCH_NAME == 'main') {
+     *         badges.uploadCoverageResult(
+     *             repo: 'data-structures',
+     *             branch: env.BRANCH_NAME
+     *         )
+     *     }
+     */
     void uploadCoverageResult(Map params) {
         ParameterValidator.required(params, 'uploadCoverageResult', 'repo')
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')

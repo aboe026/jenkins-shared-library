@@ -15,7 +15,7 @@ npx npm-groovy-lint
 Otherwise if you have [docker](https://www.docker.com/) you can run
 
 ```sh
-docker run --rm -v "$PWD":/tmp nvuillam/npm-groovy-lint
+docker run --rm -w=/tmp -v "$PWD":/tmp nvuillam/npm-groovy-lint
 ```
 
 ## Print

@@ -10,8 +10,12 @@ node {
                     sh "docker pull ${lintImage}"
                 }
 
+                stage('Checkout') {
+                    checkout scm
+                }
+
                 stage('Lint') {
-                    docker.image(lintImage).inside {
+                    docker.image(lintImage).inside('--entrypoint=') {
                         sh 'npm-groovy-lint --failon info'
                     }
                 }
