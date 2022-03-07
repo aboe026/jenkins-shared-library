@@ -61,7 +61,7 @@ class ShieldsIoBadges implements Serializable {
      *      )
      */
     ShieldsIoBadges(Map params) {
-        ParameterValidator.required (params, 'ShieldsIoBadges', 'steps', true)
+        ParameterValidator.required(params, 'ShieldsIoBadges', 'steps', true)
         this.steps = params.steps
         this.setBadgeResultsJob = ParameterValidator.defaultIfNotSet(params, 'setBadgeResultsJob', '/shields.io-badge-results/set-badge-result')
     }
