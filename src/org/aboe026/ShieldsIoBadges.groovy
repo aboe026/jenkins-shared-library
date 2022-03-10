@@ -27,6 +27,7 @@ class ShieldsIoBadges implements Serializable {
      *      def badges = new ShieldsIoBadges(this)
      */
     ShieldsIoBadges(Script steps) {
+        steps.println "TEST steps.getClass().getName(): '${steps.getClass().getName()}'"
         if (steps == null) {
             throw new Exception('Invalid parameter "null" passed to "ShieldsIoBadges" constructor: Must be non-null Script object.')
         }
@@ -43,6 +44,7 @@ class ShieldsIoBadges implements Serializable {
      *      def badges = new ShieldsIoBadges(this, '/path/in/jenkins/to/set-badge-result-job')
      */
     ShieldsIoBadges(Script steps, String setBadgeResultsJob) {
+        steps.println "TEST steps.getClass().getName(): '${steps.getClass().getName()}'"
         if (steps == null) {
             throw new Exception('Invalid first parameter "null" passed to "ShieldsIoBadges" constructor: Must be non-null Script object.')
         }
@@ -64,6 +66,7 @@ class ShieldsIoBadges implements Serializable {
     ShieldsIoBadges(Map params) {
         ParameterValidator.required(params, 'ShieldsIoBadges', 'steps', true)
         this.steps = params.steps
+        steps.println "TEST this.steps.getClass().getName(): '${this.steps.getClass().getName()}'"
         this.setBadgeResultsJob = ParameterValidator.defaultIfNotSet(params, 'setBadgeResultsJob', '/shields.io-badge-results/set-badge-result')
     }
 
