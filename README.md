@@ -2,6 +2,10 @@
 
 Jenkins CI shared library files.
 
+## Requirements
+
+- [Gradle](https://gradle.org/)
+
 ## Lint
 
 Linting code for programmatic and stylistic error detection is handled through [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint).
@@ -16,6 +20,34 @@ Otherwise if you have [docker](https://www.docker.com/) you can run
 
 ```sh
 docker run --rm -w=/tmp -v "$PWD":/tmp nvuillam/npm-groovy-lint
+```
+
+For Windows users with Git Bash, run
+
+```sh
+MSYS_NO_PATHCONV=1 docker run --rm -w=/tmp -v /$(PWD):/tmp nvuillam/npm-groovy-lint
+```
+
+## Test
+
+To execute unit tests, run
+
+```sh
+./gradlew test
+```
+
+**Note**: If using Git Bash on Windows, may need to set environment variables `TERM=cygwin` to properly format control characters.
+
+To execute tests in a docker container, run
+
+```sh
+docker run --rm -u gradle -v "$PWD":/home/gradle/project -w /home/gradle/project gradle ./gradlew test
+```
+
+For Windows users with Git Bash
+
+```sh
+MSYS_NO_PATHCONV=1 docker run --rm -u gradle -v /$(PWD):/home/gradle/project -w /home/gradle/project gradle ./gradlew test
 ```
 
 ## Print

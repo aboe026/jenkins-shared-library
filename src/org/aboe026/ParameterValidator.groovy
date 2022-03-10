@@ -1,5 +1,7 @@
 package org.aboe026
 
+import com.cloudbees.groovy.cps.NonCPS
+
 /** Validate method Map input parameters
   */
 class ParameterValidator {
@@ -17,6 +19,9 @@ class ParameterValidator {
 
     @NonCPS
     static void enumerable(Map params, String methodName, String propertyName, List<String> allowedValues) {
+        if (!allowedValues) {
+            throw new Exception("Invalid parameter \"allowedValues\" for method \"enumerable\" called by method \"${methodName}\":  Must be non-empty array.")
+        }
         def received = params[propertyName] // groovylint-disable-line NoDef, VariableTypeRequired
         if (!allowedValues.contains(received)) {
             throw new Exception("Invalid value \"${received}\" for parameter \"${propertyName}\" with method \"${methodName}\": Must be one of \"${allowedValues.join('|')}\".")
@@ -25,7 +30,7 @@ class ParameterValidator {
 
     @NonCPS
     static String defaultIfNotSet(Map params, String propertyName, String defaultValue) {
-        if (params == null || params[propertyName] == null) {
+        if (!params || params[propertyName] == null) {
             return defaultValue
         }
         return params[propertyName]

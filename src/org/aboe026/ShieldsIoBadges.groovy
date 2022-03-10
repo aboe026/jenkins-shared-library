@@ -1,5 +1,6 @@
 package org.aboe026
 
+import com.cloudbees.groovy.cps.NonCPS
 import hudson.model.Result
 import jenkins.plugins.http_request.ResponseContentSupplier
 import net.sf.json.JSONObject
@@ -9,8 +10,8 @@ import net.sf.json.JSONObject
 class ShieldsIoBadges implements Serializable {
 
     private static final long serialVersionUID = 1L
-    Script steps
-    String setBadgeResultsJob
+    private final Script steps
+    private final String setBadgeResultsJob
 
     // Not allowed, need script steps for method executions
     ShieldsIoBadges() {
