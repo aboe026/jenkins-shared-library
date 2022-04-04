@@ -237,6 +237,11 @@ class ParameterValidator__DefaultIfNotSetSpec extends Specification {
         ParameterValidator.defaultIfNotSet([ foo: null ], 'foo', 'bar') == 'bar'
     }
 
+    def 'If params property empty, default returned'() {
+        expect:
+        ParameterValidator.defaultIfNotSet([ foo: '' ], 'foo', 'bar') == 'bar'
+    }
+
     def 'If params property non-null, default ignored'() {
         expect:
         ParameterValidator.defaultIfNotSet([ foo: 'world' ], 'foo', 'bar') == 'world'

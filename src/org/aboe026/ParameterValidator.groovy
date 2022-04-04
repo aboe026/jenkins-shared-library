@@ -30,7 +30,7 @@ class ParameterValidator {
 
     @NonCPS
     static String defaultIfNotSet(Map params, String propertyName, String defaultValue) {
-        if (!params || params[propertyName] == null) {
+        if (!params || params[propertyName] == null || params[propertyName] == '') {
             return defaultValue
         }
         return params[propertyName]

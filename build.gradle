@@ -37,6 +37,10 @@ dependencies {
     // Needed for Jenkins hudson.model classes
     implementation 'org.eclipse.hudson:hudson-core:3.2.1'
 
+    // Needed for Jenkins CpsScript class
+    implementation 'org.jenkins-ci.plugins.workflow:workflow-api:2.23.1@jar'
+    implementation 'org.jenkins-ci.plugins.workflow:workflow-cps:2.41@jar'
+
     // Needed for Usage of Jenkins HTTP Request Plugin
     implementation 'org.jenkins-ci.plugins:http_request:1.14@jar'
 
