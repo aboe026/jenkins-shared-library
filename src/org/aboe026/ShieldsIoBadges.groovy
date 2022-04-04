@@ -10,7 +10,7 @@ import net.sf.json.JSONObject
 class ShieldsIoBadges implements Serializable {
 
     private static final long serialVersionUID = 1L
-    private final WorkflowScript steps
+    private final Script steps
     private final String setBadgeResultsJob
 
     // Not allowed, need script steps for method executions
@@ -26,7 +26,7 @@ class ShieldsIoBadges implements Serializable {
      *
      *      def badges = new ShieldsIoBadges(this)
      */
-    ShieldsIoBadges(WorkflowScript steps) {
+    ShieldsIoBadges(Script steps) {
         this(steps, '/shields.io-badge-results/set-badge-result')
     }
 
@@ -38,7 +38,7 @@ class ShieldsIoBadges implements Serializable {
      *
      *      def badges = new ShieldsIoBadges(this, '/path/in/jenkins/to/set-badge-result-job')
      */
-    ShieldsIoBadges(WorkflowScript steps, String setBadgeResultsJob) {
+    ShieldsIoBadges(Script steps, String setBadgeResultsJob) {
         if (!steps) {
             throw new Exception("Invalid first parameter \"${steps}\" passed to \"ShieldsIoBadges\" constructor: Must be non-null Script object.")
         }
