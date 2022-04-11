@@ -16,7 +16,7 @@ node {
 
                 stage('Lint') {
                     docker.image(lintImage).inside('--entrypoint=') {
-                        sh 'npm-groovy-lint --failon info'
+                        sh 'npm-groovy-lint --ignorepattern "**/bin/**,**/build/**,**/.gradle/**" --failon info'
                     }
                 }
             }

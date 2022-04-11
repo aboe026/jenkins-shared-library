@@ -13,19 +13,19 @@ Linting code for programmatic and stylistic error detection is handled through [
 If you have [NodeJS](https://nodejs.org/) installed, you can run
 
 ```sh
-npx npm-groovy-lint
+npx npm-groovy-lint --ignorepattern "**/bin/**,**/build/**,**/.gradle/**" --failon info
 ```
 
 Otherwise if you have [docker](https://www.docker.com/) you can run
 
 ```sh
-docker run --rm -w=/tmp -v "$PWD":/tmp nvuillam/npm-groovy-lint
+docker run --rm -w=/tmp/lint -v "$PWD":/tmp/lint nvuillam/npm-groovy-lint npm-groovy-lint --ignorepattern "**/bin/**,**/build/**,**/.gradle/**" --failon info
 ```
 
 For Windows users with Git Bash, run
 
 ```sh
-MSYS_NO_PATHCONV=1 docker run --rm -w=/tmp -v /$(PWD):/tmp nvuillam/npm-groovy-lint
+MSYS_NO_PATHCONV=1 docker run --rm -w=/tmp/lint -v /$(PWD):/tmp/lint nvuillam/npm-groovy-lint npm-groovy-lint --ignorepattern "**/bin/**,**/build/**,**/.gradle/**" --failon info
 ```
 
 ## Test

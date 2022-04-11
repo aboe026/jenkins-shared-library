@@ -43,6 +43,7 @@ dependencies {
 
     // Needed for Usage of Jenkins HTTP Request Plugin
     implementation 'org.jenkins-ci.plugins:http_request:1.14@jar'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
     // Use the awesome Spock testing and specification framework even with Java
     testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
