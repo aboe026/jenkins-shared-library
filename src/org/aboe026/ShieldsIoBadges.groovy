@@ -12,6 +12,89 @@ class ShieldsIoBadges implements Serializable {
     private static final long serialVersionUID = 1L
     private final Script steps
     private final String setBadgeResultsJob
+    static final enum Color {
+
+        BRIGHT_GREEN {
+
+            @Override
+            @NonCPS
+            String toString() {
+                return 'brightgreen'
+            }
+
+        },
+
+        GREEN {
+
+            @Override
+            @NonCPS
+            String toString() {
+                return 'green'
+            }
+
+        },
+
+        YELLOW_GREEN {
+
+            @Override
+            @NonCPS
+            String toString() {
+                return 'yellowgreen'
+            }
+
+        },
+
+        YELLOW {
+
+            @Override
+            @NonCPS
+            String toString() {
+                return 'yellow'
+            }
+
+        },
+
+        ORANGE {
+
+            @Override
+            @NonCPS
+            String toString() {
+                return 'orange'
+            }
+
+        },
+
+        RED {
+
+            @Override
+            @NonCPS
+            String toString() {
+                return 'red'
+            }
+
+        },
+
+        BLUE {
+
+            @Override
+            @NonCPS
+            String toString() {
+                return 'blue'
+            }
+
+        },
+
+        LIGHT_GREY {
+
+            @Override
+            @NonCPS
+            String toString() {
+                return 'lightgrey'
+            }
+
+        }
+
+    }
 
     // Not allowed, need script steps for method executions
     ShieldsIoBadges() {
@@ -187,90 +270,6 @@ class ShieldsIoBadges implements Serializable {
             quietPeriod: 0,
             wait: false
         )
-    }
-
-}
-
-enum Color {
-
-    BRIGHT_GREEN {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'brightgreen'
-        }
-
-    },
-
-    GREEN {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'green'
-        }
-
-    },
-
-    YELLOW_GREEN {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'yellowgreen'
-        }
-
-    },
-
-    YELLOW {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'yellow'
-        }
-
-    },
-
-    ORANGE {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'orange'
-        }
-
-    },
-
-    RED {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'red'
-        }
-
-    },
-
-    BLUE {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'blue'
-        }
-
-    },
-
-    LIGHT_GREY {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'lightgrey'
-        }
-
     }
 
 }

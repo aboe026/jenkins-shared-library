@@ -2,12 +2,14 @@
 node {
     def workDir = "${WORKSPACE}/${env.BRANCH_NAME}-${env.BUILD_ID}"
     def lintImage = 'nvuillam/npm-groovy-lint'
+    def gradleImage = 'gradle:7.4'
     def exceptionThrown = false
     try {
         ansiColor('xterm') {
             dir(workDir) {
                 stage('Pull Runtime Image') {
                     sh "docker pull ${lintImage}"
+                    sh "docker pull ${gradleImage}"
                 }
 
                 stage('Checkout') {
@@ -17,6 +19,18 @@ node {
                 stage('Lint') {
                     docker.image(lintImage).inside('--entrypoint=') {
                         sh 'npm-groovy-lint --ignorepattern "**/bin/**,**/build/**,**/.gradle/**" --failon info'
+                    }
+                }
+
+                stage('Test') {
+                    docker.image(gradleImage).inside {
+                        try {
+                            sh './gradlew test'
+                            sh './gradlew jacocoTestReport'
+                        } finally {
+                            junit testResults: 'build/test-results/test/TESTS-TestSuitesMerged.xml', allowEmptyResults: true
+                            cobertura coberturaReportFile: 'build/reports/jacoco/test/jacocoTestReport.xml'
+                        }
                     }
                 }
             }

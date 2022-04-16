@@ -12,6 +12,9 @@ plugins {
 
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
+
+    // Apply the JaCoCo plugin to capture code coverage information
+    id 'jacoco'
 }
 
 repositories {
@@ -22,6 +25,10 @@ repositories {
     maven {
         url 'https://repo.jenkins-ci.org/releases/'
     }
+}
+
+configurations {
+    antJUnit
 }
 
 dependencies {
@@ -51,6 +58,9 @@ dependencies {
 
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api 'org.apache.commons:commons-math3:3.6.1'
+
+    // Needed to merge suite junit XML into single XML for CI consumption
+    antJUnit 'org.apache.ant:ant-junit:1.9.7'
 }
 
 sourceSets {
@@ -74,5 +84,34 @@ test {
     testLogging {
         events 'passed', 'skipped', 'failed', 'standardOut', 'standardError' // show status of each test
         exceptionFormat = 'full' // show stacktraces for errors
+    }
+
+    finalizedBy 'mergeJUnitReports' // merge individual XML files into single XML file for CI Consumption
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true // generate XML file for CI consumption
+    }
+}
+
+task mergeJUnitReports {
+    ext {
+        resultsDir = file("$buildDir/test-results/test")
+    }
+
+    doLast {
+        ant.taskdef(
+            name: 'junitreport',
+            classname: 'org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator',
+            classpath: configurations.antJUnit.asPath
+        )
+
+        ant.junitreport(
+            todir: resultsDir,
+            tofile: 'TESTS-TestSuitesMerged.xml'
+        ) {
+            fileset(dir: resultsDir, includes: 'TEST-*.xml')
+        }
     }
 }

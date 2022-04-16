@@ -3,7 +3,7 @@
 import org.aboe026.ParameterValidator
 import spock.lang.Specification
 
-class ParameterValidator__RequiredSpec extends Specification {
+class ParameterValidator__requiredSpec extends Specification {
 
     def 'If params null and no constructor param, throws exception for method'() {
         when:
@@ -123,7 +123,7 @@ class ParameterValidator__RequiredSpec extends Specification {
 
 }
 
-class ParameterValidator__EnumerableSpec extends Specification {
+class ParameterValidator__enumerableSpec extends Specification {
 
     def 'If allowed null, throws exception'() {
         when:
@@ -220,7 +220,7 @@ class ParameterValidator__EnumerableSpec extends Specification {
 
 }
 
-class ParameterValidator__DefaultIfNotSetSpec extends Specification {
+class ParameterValidator__defaultIfNotSetSpec extends Specification {
 
     def 'If params null, default returned'() {
         expect:

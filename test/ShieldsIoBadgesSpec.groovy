@@ -5,7 +5,7 @@ import org.aboe026.ShieldsIoBadges
 import org.aboe026.WorkflowScript
 import spock.lang.Specification
 
-class ShieldsIoBadges__ConstructorSpec extends Specification {
+class ShieldsIoBadges__constructorSpec extends Specification {
 
     def 'If no parameters, throws exception'() {
         when:
@@ -736,6 +736,50 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
                 wait: false
             ]
         }
+    }
+
+}
+
+class ShieldsIoBadges__colorSpec extends Specification {
+
+    def 'BRIGHT_GREEN returns brightgreen'() {
+        expect:
+        ShieldsIoBadges.Color.BRIGHT_GREEN.toString() == 'brightgreen'
+    }
+
+    def 'GREEN returns green'() {
+        expect:
+        ShieldsIoBadges.Color.GREEN.toString() == 'green'
+    }
+
+    def 'YELLOW_GREEN returns yellowgreen'() {
+        expect:
+        ShieldsIoBadges.Color.YELLOW_GREEN.toString() == 'yellowgreen'
+    }
+
+    def 'YELLOW returns yellow'() {
+        expect:
+        ShieldsIoBadges.Color.YELLOW.toString() == 'yellow'
+    }
+
+    def 'ORANGE returns orange'() {
+        expect:
+        ShieldsIoBadges.Color.ORANGE.toString() == 'orange'
+    }
+
+    def 'RED returns red'() {
+        expect:
+        ShieldsIoBadges.Color.RED.toString() == 'red'
+    }
+
+    def 'BLUE returns blue'() {
+        expect:
+        ShieldsIoBadges.Color.BLUE.toString() == 'blue'
+    }
+
+    def 'LIGHT_GREY returns lightgrey'() {
+        expect:
+        ShieldsIoBadges.Color.LIGHT_GREY.toString() == 'lightgrey'
     }
 
 }

@@ -37,7 +37,8 @@ To execute unit tests, run
 ```
 
 **Note**: If using Git Bash on Windows, may need to set environment variables `TERM=cygwin` to properly format control characters.
-**Note**: To run single test, add `--tests "*If empty, throws exception"`
+**Note**: To run single test, add `--tests "*If params null, default returned"`
+**Note**: To run single spec, add `--tests "*ShieldsIoBadges__colorSpec*"`
 
 To execute tests in a docker container, run
 
@@ -50,6 +51,18 @@ For Windows users with Git Bash
 ```sh
 MSYS_NO_PATHCONV=1 docker run --rm -u gradle -v /$(PWD):/home/gradle/project -w /home/gradle/project gradle ./gradlew test
 ```
+
+## Coverage
+
+To generage code coverage, run
+
+```sh
+./gradlew jacocoTestReport
+```
+
+**Note**: If using Git Bash on Windows, may need to set environment variables `TERM=cygwin` to properly format control characters.
+
+An HTML report of coverage can then be viewed in `build/reports/jacoco/test/html/index.html`.
 
 ## Print
 
