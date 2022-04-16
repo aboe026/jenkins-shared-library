@@ -37,7 +37,9 @@ To execute unit tests, run
 ```
 
 **Note**: If using Git Bash on Windows, may need to set environment variables `TERM=cygwin` to properly format control characters.
+
 **Note**: To run single test, add `--tests "*If params null, default returned"`
+
 **Note**: To run single spec, add `--tests "*ShieldsIoBadges__colorSpec*"`
 
 To execute tests in a docker container, run
