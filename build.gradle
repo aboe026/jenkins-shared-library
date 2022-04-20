@@ -15,6 +15,9 @@ plugins {
 
     // Apply the JaCoCo plugin to capture code coverage information
     id 'jacoco'
+
+    // Apply the jacobo plugin to convert Jacoco XML to Cobertura XML for CI consumption
+    id 'com.kageiit.jacobo' version '2.0.6'
 }
 
 repositories {
@@ -48,7 +51,7 @@ dependencies {
     implementation 'org.jenkins-ci.plugins.workflow:workflow-api:2.23.1@jar'
     implementation 'org.jenkins-ci.plugins.workflow:workflow-cps:2.41@jar'
 
-    // Needed for Usage of Jenkins HTTP Request Plugin
+    // Needed for usage of Jenkins HTTP Request Plugin
     implementation 'org.jenkins-ci.plugins:http_request:1.14@jar'
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
@@ -114,4 +117,12 @@ task mergeJUnitReports {
             fileset(dir: resultsDir, includes: 'TEST-*.xml')
         }
     }
+}
+
+import com.kageiit.jacobo.JacoboTask
+
+tasks.create('jacobo', JacoboTask) { jacobo ->
+    jacobo.jacocoReport = file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    jacobo.coberturaReport = file("${project.buildDir}/reports/cobertura/cobertura.xml")
+    jacobo.srcDirs = sourceSets.main.java.srcDirs
 }

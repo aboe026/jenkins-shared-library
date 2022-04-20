@@ -27,9 +27,24 @@ node {
                         try {
                             sh './gradlew test'
                             sh './gradlew jacocoTestReport'
+                            sh './gradlew jacobo'
                         } finally {
                             junit testResults: 'build/test-results/test/TESTS-TestSuitesMerged.xml', allowEmptyResults: true
-                            cobertura coberturaReportFile: 'build/reports/jacoco/test/jacocoTestReport.xml'
+                            cobertura coberturaReportFile: 'build/reports/cobertura/cobertura.xml'
+                            // jacoco(
+                            //     execPattern: 'build/jacoco/*.exec',
+                            //     classPattern: 'build/classes/groovy/main/org/aboe026',
+                            //     sourcePattern: 'src/org/aboe026'
+                            // )
+                            // Need to move source files from jacoco/sources to jacoco/sources/org/aboe026
+                            // because that is where the jacoco plugin looks for them, and apparently isn't
+                            // putting them there correctly. Probably a setting I have gotten incorrect
+                            // sh 'mkdir -p jacoco/sources/org/aboe026'
+                            // sh 'find jacoco/sources -type f -print0'
+                            // sh 'find jacoco/sources -type f -print0 \\| xargs -0 mv -t jacoco/sources/org/aboe026'
+                            // then use jacoco endpoint http://localhost:8080/job/jenkins-shared-library/job/jenkins-shared-library/view/change-requests/job/PR-4/5/jacoco/api/json?pretty=true
+                            // to call for nums/denoms
+                            // rename uploadCoverage to uploadJacocoCoverage and uploadCoberturaCoverage
                         }
                     }
                 }

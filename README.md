@@ -2,6 +2,8 @@
 
 Jenkins CI shared library files.
 
+**Note**: When running `./gradlew` commands using Git Bash on Windows, may need to set environment variable `TERM=cygwin` to properly format control characters.
+
 ## Requirements
 
 - [Gradle](https://gradle.org/)
@@ -28,6 +30,14 @@ For Windows users with Git Bash, run
 MSYS_NO_PATHCONV=1 docker run --rm -w=/tmp/lint -v /$(PWD):/tmp/lint nvuillam/npm-groovy-lint npm-groovy-lint --ignorepattern "**/bin/**,**/build/**,**/.gradle/**" --failon info
 ```
 
+## Build
+
+To build code, run
+
+```sh
+./gradlew build -x test
+```
+
 ## Test
 
 To execute unit tests, run
@@ -35,8 +45,6 @@ To execute unit tests, run
 ```sh
 ./gradlew test
 ```
-
-**Note**: If using Git Bash on Windows, may need to set environment variables `TERM=cygwin` to properly format control characters.
 
 **Note**: To run single test, add `--tests "*If params null, default returned"`
 
@@ -62,9 +70,13 @@ To generage code coverage, run
 ./gradlew jacocoTestReport
 ```
 
-**Note**: If using Git Bash on Windows, may need to set environment variables `TERM=cygwin` to properly format control characters.
-
 An HTML report of coverage can then be viewed in `build/reports/jacoco/test/html/index.html`.
+
+To convert the Jacoco XML to Cobertura XML, run
+
+```sh
+./gradlew jacobo
+```
 
 ## Print
 
