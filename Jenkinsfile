@@ -42,7 +42,8 @@ node {
                             // sh 'mkdir -p jacoco/sources/org/aboe026'
                             // sh 'find jacoco/sources -type f -print0'
                             // sh 'find jacoco/sources -type f -print0 \\| xargs -0 mv -t jacoco/sources/org/aboe026'
-                            // then use jacoco endpoint http://localhost:8080/job/jenkins-shared-library/job/jenkins-shared-library/view/change-requests/job/PR-4/5/jacoco/api/json?pretty=true
+                            // then use jacoco endpoint
+                            // http://localhost:8080/job/jenkins-shared-library/job/jenkins-shared-library/view/change-requests/job/PR-4/5/jacoco/api/json?pretty=true
                             // to call for nums/denoms
                             // rename uploadCoverage to uploadJacocoCoverage and uploadCoberturaCoverage
                         }
