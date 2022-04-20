@@ -124,5 +124,5 @@ import com.kageiit.jacobo.JacoboTask
 tasks.create('jacobo', JacoboTask) { jacobo ->
     jacobo.jacocoReport = file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
     jacobo.coberturaReport = file("${project.buildDir}/reports/cobertura/cobertura.xml")
-    jacobo.srcDirs = sourceSets.main.java.srcDirs
+    jacobo.srcDirs = sourceSets.main.groovy.srcDirs
 }
