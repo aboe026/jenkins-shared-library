@@ -126,3 +126,14 @@ tasks.create('jacobo', JacoboTask) { jacobo ->
     jacobo.coberturaReport = file("${project.buildDir}/reports/cobertura/cobertura.xml")
     jacobo.srcDirs = sourceSets.main.groovy.srcDirs
 }
+
+task changeCoberturaSourceFileEndings {
+    String coberturaFile = "${project.buildDir}/reports/cobertura/cobertura.xml"
+    Node coberturaCoverage = (new XmlParser()).parse(coberturaFile)
+    coberturaCoverage.packages.package.each { coveragePackage ->
+        coveragePackage.classes.class.each { packageClass ->
+            packageClass.@filename = packageClass.@filename.replaceAll(/\.java$/, '.groovy')
+        }
+    }
+    new XmlNodePrinter(new PrintWriter(new FileWriter(coberturaFile))).print(coberturaCoverage)
+}
