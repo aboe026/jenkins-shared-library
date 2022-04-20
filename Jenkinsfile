@@ -28,7 +28,6 @@ node {
                             sh './gradlew test'
                             sh './gradlew jacocoTestReport'
                             sh './gradlew jacobo'
-                            sh './gradlew changeCoberturaSourceFileEndings'
                         } finally {
                             junit testResults: 'build/test-results/test/TESTS-TestSuitesMerged.xml', allowEmptyResults: true
                             cobertura coberturaReportFile: 'build/reports/cobertura/cobertura.xml'
