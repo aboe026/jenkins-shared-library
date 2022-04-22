@@ -148,223 +148,223 @@ class ShieldsIoBadges__constructorSpec extends Specification {
 
 }
 
-// class ShieldsIoBadges__uploadBuildResultSpec extends Specification {
+class ShieldsIoBadges__uploadBuildResultSpec extends Specification {
 
-//     def 'If no parameters, throws exception'() {
-//         when:
-//         new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadBuildResult()
+    def 'If no parameters, throws exception'() {
+        when:
+        new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadBuildResult()
 
-//         then:
-//         def exception = thrown(Exception)
-//         exception.message == 'Invalid parameter "null" passed to "uploadBuildResult" method: Must be Map with at least "repo" property defined.'
-//     }
+        then:
+        def exception = thrown(Exception)
+        exception.message == 'Invalid parameter "null" passed to "uploadBuildResult" method: Must be Map with at least "repo" property defined.'
+    }
 
-//     def 'If Map empty, throws exception'() {
-//         when:
-//         new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadBuildResult([:])
+    def 'If Map empty, throws exception'() {
+        when:
+        new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadBuildResult([:])
 
-//         then:
-//         def exception = thrown(Exception)
-//         exception.message == 'Invalid parameter "null" passed to "uploadBuildResult" method: Must be Map with at least "repo" property defined.'
-//     }
+        then:
+        def exception = thrown(Exception)
+        exception.message == 'Invalid parameter "null" passed to "uploadBuildResult" method: Must be Map with at least "repo" property defined.'
+    }
 
-//     def 'If Map with just repo, throws exception'() {
-//         when:
-//         new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadBuildResult(repo: 'foo')
+    def 'If Map with just repo, throws exception'() {
+        when:
+        new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadBuildResult(repo: 'foo')
 
-//         then:
-//         def exception = thrown(Exception)
-//         exception.message == 'Invalid parameter passed to "uploadBuildResult" method: Must have property "status" with non-null value.'
-//     }
+        then:
+        def exception = thrown(Exception)
+        exception.message == 'Invalid parameter passed to "uploadBuildResult" method: Must have property "status" with non-null value.'
+    }
 
-//     def 'If Map with invalid status, throws exception'() {
-//         when:
-//         new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadBuildResult(
-//             repo: 'foo',
-//             status: 'bar'
-//         )
+    def 'If Map with invalid status, throws exception'() {
+        when:
+        new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadBuildResult(
+            repo: 'foo',
+            status: 'bar'
+        )
 
-//         then:
-//         def exception = thrown(Exception)
-//         exception.message == 'Invalid value "bar" for parameter "status" with method "uploadBuildResult": Must be one of "ABORTED|FAILURE|NOT_BUILT|SUCCESS|UNSTABLE".'
-//     }
+        then:
+        def exception = thrown(Exception)
+        exception.message == 'Invalid value "bar" for parameter "status" with method "uploadBuildResult": Must be one of "ABORTED|FAILURE|NOT_BUILT|SUCCESS|UNSTABLE".'
+    }
 
-//     def 'If Map with success status, triggers build with brightgreen badge and defaults'() {
-//         WorkflowScript steps
+    def 'If Map with success status, triggers build with brightgreen badge and defaults'() {
+        WorkflowScript steps
 
-//         given:
-//         steps = Spy(WorkflowScript)
+        given:
+        steps = Spy(WorkflowScript)
 
-//         when:
-//         new ShieldsIoBadges(steps).uploadBuildResult(
-//             repo: 'foo',
-//             status: 'SUCCESS'
-//         )
+        when:
+        new ShieldsIoBadges(steps).uploadBuildResult(
+            repo: 'foo',
+            status: 'SUCCESS'
+        )
 
-//         then:
-//         1 * steps.build { argument ->
-//             argument == [
-//                 job: '/shields.io-badge-results/set-badge-result',
-//                 parameters: [
-//                     [name: 'repo', value: 'foo'],
-//                     [name: 'branch', value: 'main'],
-//                     [name: 'label', value: 'build'],
-//                     [name: 'message', value: 'passing'],
-//                     [name: 'color', value: 'brightgreen']
-//                 ],
-//                 quietPeriod: 0,
-//                 wait: false
-//             ]
-//         }
-//     }
+        then:
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'build'],
+                    [name: 'message', value: 'passing'],
+                    [name: 'color', value: 'brightgreen']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
 
-//     def 'If Map with unstable status, triggers build with yellow badge and defaults'() {
-//         WorkflowScript steps
+    def 'If Map with unstable status, triggers build with yellow badge and defaults'() {
+        WorkflowScript steps
 
-//         given:
-//         steps = Spy(WorkflowScript)
+        given:
+        steps = Spy(WorkflowScript)
 
-//         when:
-//         new ShieldsIoBadges(steps).uploadBuildResult(
-//             repo: 'foo',
-//             status: 'UNSTABLE'
-//         )
+        when:
+        new ShieldsIoBadges(steps).uploadBuildResult(
+            repo: 'foo',
+            status: 'UNSTABLE'
+        )
 
-//         then:
-//         1 * steps.build { argument ->
-//             argument == [
-//                 job: '/shields.io-badge-results/set-badge-result',
-//                 parameters: [
-//                     [name: 'repo', value: 'foo'],
-//                     [name: 'branch', value: 'main'],
-//                     [name: 'label', value: 'build'],
-//                     [name: 'message', value: 'unstable'],
-//                     [name: 'color', value: 'yellow']
-//                 ],
-//                 quietPeriod: 0,
-//                 wait: false
-//             ]
-//         }
-//     }
+        then:
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'build'],
+                    [name: 'message', value: 'unstable'],
+                    [name: 'color', value: 'yellow']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
 
-//     def 'If Map with not build status, triggers build with grey badge and defaults'() {
-//         WorkflowScript steps
+    def 'If Map with not build status, triggers build with grey badge and defaults'() {
+        WorkflowScript steps
 
-//         given:
-//         steps = Spy(WorkflowScript)
+        given:
+        steps = Spy(WorkflowScript)
 
-//         when:
-//         new ShieldsIoBadges(steps).uploadBuildResult(
-//             repo: 'foo',
-//             status: 'NOT_BUILT'
-//         )
+        when:
+        new ShieldsIoBadges(steps).uploadBuildResult(
+            repo: 'foo',
+            status: 'NOT_BUILT'
+        )
 
-//         then:
-//         1 * steps.build { argument ->
-//             argument == [
-//                 job: '/shields.io-badge-results/set-badge-result',
-//                 parameters: [
-//                     [name: 'repo', value: 'foo'],
-//                     [name: 'branch', value: 'main'],
-//                     [name: 'label', value: 'build'],
-//                     [name: 'message', value: 'none'],
-//                     [name: 'color', value: 'lightgrey']
-//                 ],
-//                 quietPeriod: 0,
-//                 wait: false
-//             ]
-//         }
-//     }
+        then:
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'build'],
+                    [name: 'message', value: 'none'],
+                    [name: 'color', value: 'lightgrey']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
 
-//     def 'If Map with aborted status, triggers build with orange badge and defaults'() {
-//         WorkflowScript steps
+    def 'If Map with aborted status, triggers build with orange badge and defaults'() {
+        WorkflowScript steps
 
-//         given:
-//         steps = Spy(WorkflowScript)
+        given:
+        steps = Spy(WorkflowScript)
 
-//         when:
-//         new ShieldsIoBadges(steps).uploadBuildResult(
-//             repo: 'foo',
-//             status: 'ABORTED'
-//         )
+        when:
+        new ShieldsIoBadges(steps).uploadBuildResult(
+            repo: 'foo',
+            status: 'ABORTED'
+        )
 
-//         then:
-//         1 * steps.build { argument ->
-//             argument == [
-//                 job: '/shields.io-badge-results/set-badge-result',
-//                 parameters: [
-//                     [name: 'repo', value: 'foo'],
-//                     [name: 'branch', value: 'main'],
-//                     [name: 'label', value: 'build'],
-//                     [name: 'message', value: 'aborted'],
-//                     [name: 'color', value: 'orange']
-//                 ],
-//                 quietPeriod: 0,
-//                 wait: false
-//             ]
-//         }
-//     }
+        then:
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'build'],
+                    [name: 'message', value: 'aborted'],
+                    [name: 'color', value: 'orange']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
 
-//     def 'If Map with failed status, triggers build with red badge and defaults'() {
-//         WorkflowScript steps
+    def 'If Map with failed status, triggers build with red badge and defaults'() {
+        WorkflowScript steps
 
-//         given:
-//         steps = Spy(WorkflowScript)
+        given:
+        steps = Spy(WorkflowScript)
 
-//         when:
-//         new ShieldsIoBadges(steps).uploadBuildResult(
-//             repo: 'foo',
-//             status: 'FAILURE'
-//         )
+        when:
+        new ShieldsIoBadges(steps).uploadBuildResult(
+            repo: 'foo',
+            status: 'FAILURE'
+        )
 
-//         then:
-//         1 * steps.build { argument ->
-//             argument == [
-//                 job: '/shields.io-badge-results/set-badge-result',
-//                 parameters: [
-//                     [name: 'repo', value: 'foo'],
-//                     [name: 'branch', value: 'main'],
-//                     [name: 'label', value: 'build'],
-//                     [name: 'message', value: 'failed'],
-//                     [name: 'color', value: 'red']
-//                 ],
-//                 quietPeriod: 0,
-//                 wait: false
-//             ]
-//         }
-//     }
+        then:
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'build'],
+                    [name: 'message', value: 'failed'],
+                    [name: 'color', value: 'red']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
 
-//     def 'If Map with explicit branch, triggers build with non-default branch'() {
-//         WorkflowScript steps
+    def 'If Map with explicit branch, triggers build with non-default branch'() {
+        WorkflowScript steps
 
-//         given:
-//         steps = Spy(WorkflowScript)
+        given:
+        steps = Spy(WorkflowScript)
 
-//         when:
-//         new ShieldsIoBadges(steps).uploadBuildResult(
-//             repo: 'foo',
-//             status: 'SUCCESS',
-//             branch: 'master'
-//         )
+        when:
+        new ShieldsIoBadges(steps).uploadBuildResult(
+            repo: 'foo',
+            status: 'SUCCESS',
+            branch: 'master'
+        )
 
-//         then:
-//         1 * steps.build { argument ->
-//             argument == [
-//                 job: '/shields.io-badge-results/set-badge-result',
-//                 parameters: [
-//                     [name: 'repo', value: 'foo'],
-//                     [name: 'branch', value: 'master'],
-//                     [name: 'label', value: 'build'],
-//                     [name: 'message', value: 'passing'],
-//                     [name: 'color', value: 'brightgreen']
-//                 ],
-//                 quietPeriod: 0,
-//                 wait: false
-//             ]
-//         }
-//     }
+        then:
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'master'],
+                    [name: 'label', value: 'build'],
+                    [name: 'message', value: 'passing'],
+                    [name: 'color', value: 'brightgreen']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
 
-// }
+}
 
 class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
 

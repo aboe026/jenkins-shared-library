@@ -15,9 +15,6 @@ plugins {
 
     // Apply the JaCoCo plugin to capture code coverage information
     id 'jacoco'
-
-    // Apply the jacobo plugin to convert Jacoco XML to Cobertura XML for CI consumption
-    id 'com.kageiit.jacobo' version '2.0.6'
 }
 
 repositories {
@@ -116,28 +113,5 @@ task mergeJUnitReports {
         ) {
             fileset(dir: resultsDir, includes: 'TEST-*.xml')
         }
-    }
-}
-
-import com.kageiit.jacobo.JacoboTask
-
-tasks.create('jacobo', JacoboTask) { jacobo ->
-    jacobo.jacocoReport = file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
-    jacobo.coberturaReport = file("${project.buildDir}/reports/cobertura/cobertura.xml")
-    jacobo.srcDirs = sourceSets.main.groovy.srcDirs
-
-    finalizedBy 'changeCoberturaSourceFileEndings' // merge individual XML files into single XML file for CI Consumption
-}
-
-task changeCoberturaSourceFileEndings {
-    doLast {
-        String coberturaFile = "${project.buildDir}/reports/cobertura/cobertura.xml"
-        Node coberturaCoverage = (new XmlParser()).parse(coberturaFile)
-        coberturaCoverage.packages.package.each { coveragePackage ->
-            coveragePackage.classes.class.each { packageClass ->
-                packageClass.@filename = packageClass.@filename.replaceAll(/\.java$/, '.groovy')
-            }
-        }
-        new XmlNodePrinter(new PrintWriter(new FileWriter(coberturaFile))).print(coberturaCoverage)
     }
 }
