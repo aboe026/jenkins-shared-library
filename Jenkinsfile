@@ -31,15 +31,9 @@ node {
                             junit testResults: 'build/test-results/test/TESTS-TestSuitesMerged.xml', allowEmptyResults: true
                             jacoco(
                                 execPattern: 'build/jacoco/*.exec',
-                                classPattern: 'build/classes/groovy/main/org/aboe026',
-                                sourcePattern: 'src/org/aboe026'
+                                classPattern: 'build/classes/groovy/main',
+                                sourcePattern: 'src'
                             )
-                            // Need to move source files from jacoco/sources to jacoco/sources/org/aboe026
-                            // because that is where the jacoco plugin looks for them, and apparently isn't
-                            // putting them there correctly. Probably due to an incorrect config for the jacoco method?
-                            sh 'mkdir -p jacoco/sources/org/aboe026'
-                            sh 'find jacoco/sources -type f -print0'
-                            sh 'find jacoco/sources -type f -print0 \\| xargs -0 mv -t jacoco/sources/org/aboe026'
 
                             // then use jacoco endpoint
                             // http://localhost:8080/job/jenkins-shared-library/job/jenkins-shared-library/view/change-requests/job/PR-4/5/jacoco/api/json?pretty=true
