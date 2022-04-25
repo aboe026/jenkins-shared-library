@@ -237,18 +237,23 @@ class ShieldsIoBadges implements Serializable {
                 color = ShieldsIoBadgeColor.RED
                 break
         }
-        this.steps.build(
-            job: this.setBadgeResultsJob,
-            parameters: [
-                this.steps.string(name: 'repo', value: params.repo),
-                this.steps.string(name: 'branch', value: branch),
-                this.steps.string(name: 'label', value: 'coverage'),
-                this.steps.string(name: 'message', value: "${percentage}%"),
-                this.steps.string(name: 'color', value: color),
-            ],
-            quietPeriod: 0,
-            wait: false
-        )
+        this.steps.println "TEST this.setBadgeResultsJob: '${this.setBadgeResultsJob}'"
+        this.steps.println "TEST params.repo: '${params.repo}'"
+        this.steps.println "TEST branch: '${branch}'"
+        this.steps.println "TEST percentage: '${percentage}'"
+        this.steps.println "TEST color: '${color}'"
+        // this.steps.build(
+        //     job: this.setBadgeResultsJob,
+        //     parameters: [
+        //         this.steps.string(name: 'repo', value: params.repo),
+        //         this.steps.string(name: 'branch', value: branch),
+        //         this.steps.string(name: 'label', value: 'coverage'),
+        //         this.steps.string(name: 'message', value: "${percentage}%"),
+        //         this.steps.string(name: 'color', value: color),
+        //     ],
+        //     quietPeriod: 0,
+        //     wait: false
+        // )
     }
 
 }
