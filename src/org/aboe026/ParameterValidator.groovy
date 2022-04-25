@@ -18,13 +18,15 @@ class ParameterValidator {
     }
 
     @NonCPS
-    static void enumerable(Map params, String methodName, String propertyName, List<String> allowedValues) {
+    static void enumerable(Map params, String methodName, String propertyName, List<String> allowedValues, boolean isArray = false) {
         if (!allowedValues) {
             throw new Exception("Invalid parameter \"allowedValues\" for method \"enumerable\" called by method \"${methodName}\":  Must be non-empty array.")
         }
-        def received = params[propertyName] // groovylint-disable-line NoDef, VariableTypeRequired
-        if (!allowedValues.contains(received)) {
-            throw new Exception("Invalid value \"${received}\" for parameter \"${propertyName}\" with method \"${methodName}\": Must be one of \"${allowedValues.join('|')}\".")
+        def received = isArray ? params[propertyName] : [params[propertyName]] // groovylint-disable-line NoDef, VariableTypeRequired
+        received.each { value ->
+            if (!allowedValues.contains(value)) {
+                throw new Exception("Invalid value \"${value}\" for parameter \"${propertyName}\" with method \"${methodName}\": Must be one of \"${allowedValues.join('|')}\".")
+            }
         }
     }
 

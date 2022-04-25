@@ -366,24 +366,24 @@ class ShieldsIoBadges__uploadBuildResultSpec extends Specification {
 
 }
 
-class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
+class ShieldsIoBadges__uploadCoberturaCoverageResultSpec extends Specification {
 
     def 'If no parameters, throws exception'() {
         when:
-        new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadCoverageResult()
+        new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadCoberturaCoverageResult()
 
         then:
         def exception = thrown(Exception)
-        exception.message == 'Invalid parameter "null" passed to "uploadCoverageResult" method: Must be Map with at least "repo" property defined.'
+        exception.message == 'Invalid parameter "null" passed to "uploadCoberturaCoverageResult" method: Must be Map with at least "repo" property defined.'
     }
 
     def 'If Map empty, throws exception'() {
         when:
-        new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadCoverageResult([:])
+        new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadCoberturaCoverageResult([:])
 
         then:
         def exception = thrown(Exception)
-        exception.message == 'Invalid parameter "null" passed to "uploadCoverageResult" method: Must be Map with at least "repo" property defined.'
+        exception.message == 'Invalid parameter "null" passed to "uploadCoberturaCoverageResult" method: Must be Map with at least "repo" property defined.'
     }
 
     def 'If Map with repo and 100 coverage, triggers build with brightgreen badge and defaults'() {
@@ -393,7 +393,7 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
         steps = Spy(WorkflowScript)
 
         when:
-        new ShieldsIoBadges(steps).uploadCoverageResult(
+        new ShieldsIoBadges(steps).uploadCoberturaCoverageResult(
             repo: 'foo'
         )
 
@@ -409,9 +409,11 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
                 "results": {
                     "elements": [
                         {
+                            "name": "Lines",
                             "numerator": 50,
                             "denominator": 50
                         },{
+                            "name": "Conditionals",
                             "numerator": 50,
                             "denominator": 50
                         }
@@ -443,7 +445,7 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
         steps = Spy(WorkflowScript)
 
         when:
-        new ShieldsIoBadges(steps).uploadCoverageResult(
+        new ShieldsIoBadges(steps).uploadCoberturaCoverageResult(
             repo: 'foo'
         )
 
@@ -459,9 +461,11 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
                 "results": {
                     "elements": [
                         {
+                            "name": "Lines",
                             "numerator": 50,
                             "denominator": 50
                         },{
+                            "name": "Conditionals",
                             "numerator": 40,
                             "denominator": 50
                         }
@@ -493,7 +497,7 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
         steps = Spy(WorkflowScript)
 
         when:
-        new ShieldsIoBadges(steps).uploadCoverageResult(
+        new ShieldsIoBadges(steps).uploadCoberturaCoverageResult(
             repo: 'foo'
         )
 
@@ -509,9 +513,11 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
                 "results": {
                     "elements": [
                         {
+                            "name": "Lines",
                             "numerator": 50,
                             "denominator": 50
                         },{
+                            "name": "Conditionals",
                             "numerator": 30,
                             "denominator": 50
                         }
@@ -543,7 +549,7 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
         steps = Spy(WorkflowScript)
 
         when:
-        new ShieldsIoBadges(steps).uploadCoverageResult(
+        new ShieldsIoBadges(steps).uploadCoberturaCoverageResult(
             repo: 'foo'
         )
 
@@ -559,9 +565,11 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
                 "results": {
                     "elements": [
                         {
+                            "name": "Lines",
                             "numerator": 50,
                             "denominator": 50
                         },{
+                            "name": "Conditionals",
                             "numerator": 20,
                             "denominator": 50
                         }
@@ -593,7 +601,7 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
         steps = Spy(WorkflowScript)
 
         when:
-        new ShieldsIoBadges(steps).uploadCoverageResult(
+        new ShieldsIoBadges(steps).uploadCoberturaCoverageResult(
             repo: 'foo'
         )
 
@@ -609,9 +617,11 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
                 "results": {
                     "elements": [
                         {
+                            "name": "Lines",
                             "numerator": 50,
                             "denominator": 50
                         },{
+                            "name": "Conditionals",
                             "numerator": 10,
                             "denominator": 50
                         }
@@ -643,7 +653,7 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
         steps = Spy(WorkflowScript)
 
         when:
-        new ShieldsIoBadges(steps).uploadCoverageResult(
+        new ShieldsIoBadges(steps).uploadCoberturaCoverageResult(
             repo: 'foo'
         )
 
@@ -659,9 +669,11 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
                 "results": {
                     "elements": [
                         {
+                            "name": "Lines",
                             "numerator": 50,
                             "denominator": 50
                         },{
+                            "name": "Conditionals",
                             "numerator": 0,
                             "denominator": 50
                         }
@@ -693,7 +705,7 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
         steps = Spy(WorkflowScript)
 
         when:
-        new ShieldsIoBadges(steps).uploadCoverageResult(
+        new ShieldsIoBadges(steps).uploadCoberturaCoverageResult(
             repo: 'foo',
             branch: 'master',
             credentialsId: 'SUPER_SECRET'
@@ -711,9 +723,11 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
                 "results": {
                     "elements": [
                         {
+                            "name": "Lines",
                             "numerator": 50,
                             "denominator": 50
                         },{
+                            "name": "Conditionals",
                             "numerator": 45,
                             "denominator": 50
                         }
@@ -736,50 +750,6 @@ class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
                 wait: false
             ]
         }
-    }
-
-}
-
-class ShieldsIoBadges__colorSpec extends Specification {
-
-    def 'BRIGHT_GREEN returns brightgreen'() {
-        expect:
-        ShieldsIoBadges.Color.BRIGHT_GREEN.toString() == 'brightgreen'
-    }
-
-    def 'GREEN returns green'() {
-        expect:
-        ShieldsIoBadges.Color.GREEN.toString() == 'green'
-    }
-
-    def 'YELLOW_GREEN returns yellowgreen'() {
-        expect:
-        ShieldsIoBadges.Color.YELLOW_GREEN.toString() == 'yellowgreen'
-    }
-
-    def 'YELLOW returns yellow'() {
-        expect:
-        ShieldsIoBadges.Color.YELLOW.toString() == 'yellow'
-    }
-
-    def 'ORANGE returns orange'() {
-        expect:
-        ShieldsIoBadges.Color.ORANGE.toString() == 'orange'
-    }
-
-    def 'RED returns red'() {
-        expect:
-        ShieldsIoBadges.Color.RED.toString() == 'red'
-    }
-
-    def 'BLUE returns blue'() {
-        expect:
-        ShieldsIoBadges.Color.BLUE.toString() == 'blue'
-    }
-
-    def 'LIGHT_GREY returns lightgrey'() {
-        expect:
-        ShieldsIoBadges.Color.LIGHT_GREY.toString() == 'lightgrey'
     }
 
 }

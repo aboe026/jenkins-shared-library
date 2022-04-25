@@ -1,6 +1,5 @@
 package org.aboe026
 
-import com.cloudbees.groovy.cps.NonCPS
 import hudson.model.Result
 import jenkins.plugins.http_request.ResponseContentSupplier
 import net.sf.json.JSONObject
@@ -12,89 +11,6 @@ class ShieldsIoBadges implements Serializable {
     private static final long serialVersionUID = 1L
     private final Script steps
     private final String setBadgeResultsJob
-    static final enum Color {
-
-        BRIGHT_GREEN {
-
-            @Override
-            @NonCPS
-            String toString() {
-                return 'brightgreen'
-            }
-
-        },
-
-        GREEN {
-
-            @Override
-            @NonCPS
-            String toString() {
-                return 'green'
-            }
-
-        },
-
-        YELLOW_GREEN {
-
-            @Override
-            @NonCPS
-            String toString() {
-                return 'yellowgreen'
-            }
-
-        },
-
-        YELLOW {
-
-            @Override
-            @NonCPS
-            String toString() {
-                return 'yellow'
-            }
-
-        },
-
-        ORANGE {
-
-            @Override
-            @NonCPS
-            String toString() {
-                return 'orange'
-            }
-
-        },
-
-        RED {
-
-            @Override
-            @NonCPS
-            String toString() {
-                return 'red'
-            }
-
-        },
-
-        BLUE {
-
-            @Override
-            @NonCPS
-            String toString() {
-                return 'blue'
-            }
-
-        },
-
-        LIGHT_GREY {
-
-            @Override
-            @NonCPS
-            String toString() {
-                return 'lightgrey'
-            }
-
-        }
-
-    }
 
     // Not allowed, need script steps for method executions
     ShieldsIoBadges() {
@@ -172,23 +88,23 @@ class ShieldsIoBadges implements Serializable {
         switch (params.status) {
             case Result.SUCCESS.toString():
                 message = 'passing'
-                color = Color.BRIGHT_GREEN
+                color = ShieldsIoBadgeColor.BRIGHT_GREEN
                 break
             case Result.UNSTABLE.toString():
                 message = 'unstable'
-                color = Color.YELLOW
+                color = ShieldsIoBadgeColor.YELLOW
                 break
             case Result.NOT_BUILT.toString():
                 message = 'none'
-                color = Color.LIGHT_GREY
+                color = ShieldsIoBadgeColor.LIGHT_GREY
                 break
             case Result.ABORTED.toString():
                 message = 'aborted'
-                color = Color.ORANGE
+                color = ShieldsIoBadgeColor.ORANGE
                 break
             default:
                 message = 'failed'
-                color = Color.RED
+                color = ShieldsIoBadgeColor.RED
                 break
         }
         this.steps.build(
@@ -208,19 +124,86 @@ class ShieldsIoBadges implements Serializable {
     /* Can be called in Jenkinsfile like:
      *
      *     if (env.BRANCH_NAME == 'main') {
-     *         badges.uploadCoverageResult(
+     *         badges.uploadCoberturaCoverageResult(
      *             repo: 'data-structures',
      *             branch: env.BRANCH_NAME
      *         )
      *     }
      */
-    void uploadCoverageResult(Map params) {
-        ParameterValidator.required(params, 'uploadCoverageResult', 'repo')
+    void uploadCoberturaCoverageResult(Map params) {
+        if (params && params.ignoreCategories) {
+            ParameterValidator.enumerable(params, 'uploadCoberturaCoverageResult', 'ignoreCategories', [
+                CoberturaCategory.CLASSES,
+                CoberturaCategory.CONDITIONALS,
+                CoberturaCategory.FILES,
+                CoberturaCategory.LINES,
+                CoberturaCategory.METHODS,
+                CoberturaCategory.PACKAGES
+            ], true)
+        }
+        uploadCoverageResult(params, 'uploadCoberturaCoverageResult', '/cobertura/api/json?depth=2') { JSONObject json ->
+            int numeratorTotal = 0
+            int denominatorTotal = 0
+            Closure addCategory = { JSONObject result ->
+                if (!params.ignoreCategories || !params.ignoreCategories.includes(result.name)) {
+                    numeratorTotal += result.numerator
+                    denominatorTotal += result.denominator
+                }
+            }
+            json.results.elements.each { result ->
+                addCategory(result)
+            }
+            return [ numeratorTotal, denominatorTotal ]
+        }
+    }
+
+    /* Can be called in Jenkinsfile like:
+     *
+     *     if (env.BRANCH_NAME == 'main') {
+     *         badges.uploadJacocoCoverageResult(
+     *             repo: 'data-structures',
+     *             branch: env.BRANCH_NAME,
+     *             ignoreCategories: ['instructionCoverage']
+     *         )
+     *     }
+     */
+    void uploadJacocoCoverageResult(Map params) {
+        if (params && params.ignoreCategories) {
+            ParameterValidator.enumerable(params, 'uploadJacocoCoverageResult', 'ignoreCategories', [
+                JacocoCategory.BRANCH_COVERAGE,
+                JacocoCategory.CLASS_COVERAGE,
+                JacocoCategory.COMPLEXITY_SCORE,
+                JacocoCategory.INSTRUCTION_COVERAGE,
+                JacocoCategory.LINE_COVERAGE,
+                JacocoCategory.METHOD_COVERAGE
+            ], true)
+        }
+        uploadCoverageResult(params, 'uploadJacocoCoverageResult', '/jacoco/api/json') { JSONObject json ->
+            int numeratorTotal = 0
+            int denominatorTotal = 0
+            Closure addCategory { JacocoCategory category ->
+                if (!params.ignoreCategories || !params.ignoreCategories.includes(category)) {
+                    numeratorTotal += json[category].covered
+                    denominatorTotal += json[category].total
+                }
+            }
+            addCategory(JacocoCategory.BRANCH_COVERAGE)
+            addCategory(JacocoCategory.CLASS_COVERAGE)
+            addCategory(JacocoCategory.COMPLEXITY_SCORE)
+            addCategory(JacocoCategory.INSTRUCTION_COVERAGE)
+            addCategory(JacocoCategory.LINE_COVERAGE)
+            addCategory(JacocoCategory.METHOD_COVERAGE)
+            return [numeratorTotal, denominatorTotal]
+        }
+    }
+
+    private void uploadCoverageResult(Map params, String method, String resultsUrlPath, Closure jsonToNumDenom) {
+        ParameterValidator.required(params, method, 'repo')
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
 
         URL buildUrl = new URL(this.steps.env.BUILD_URL)
-        String coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + '/cobertura/api/json?depth=2', null)
+        String coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + resultsUrlPath, null)
 
         ResponseContentSupplier response = this.steps.httpRequest(
             url: coverageUrl,
@@ -229,33 +212,29 @@ class ShieldsIoBadges implements Serializable {
         )
         JSONObject coverageJson = this.steps.readJSON text: response.content
 
-        int numeratorTotal = 0
-        int denominatorTotal = 0
-        coverageJson.results.elements.each { result ->
-            numeratorTotal += result.numerator
-            denominatorTotal += result.denominator
-        }
+        def (int numeratorTotal, int denominatorTotal) = jsonToNumDenom(coverageJson)
+
         BigDecimal overallCoverage = numeratorTotal / denominatorTotal
         int percentage = Math.round(Math.floor(overallCoverage * 100))
         String color = ''
         switch (percentage) {
             case 100:
-                color = Color.BRIGHT_GREEN
+                color = ShieldsIoBadgeColor.BRIGHT_GREEN
                 break
             case 90..100:
-                color = Color.GREEN
+                color = ShieldsIoBadgeColor.GREEN
                 break
             case 80..90:
-                color = Color.YELLOW_GREEN
+                color = ShieldsIoBadgeColor.YELLOW_GREEN
                 break
             case 70..80:
-                color = Color.YELLOW
+                color = ShieldsIoBadgeColor.YELLOW
                 break
             case 60..70:
-                color = Color.ORANGE
+                color = ShieldsIoBadgeColor.ORANGE
                 break
             default:
-                color = Color.RED
+                color = ShieldsIoBadgeColor.RED
                 break
         }
         this.steps.build(
