@@ -1,9 +1,15 @@
 /* groovylint-disable NoDef, VariableTypeRequired */
+@Library('aboe026@unit-tests') _ // groovylint-disable-line VariableName, UnusedVariable
+
+import org.aboe026.ShieldsIoBadges
+
 node {
     def workDir = "${WORKSPACE}/${env.BRANCH_NAME}-${env.BUILD_ID}"
     def lintImage = 'nvuillam/npm-groovy-lint'
     def gradleImage = 'gradle:7.4'
     def exceptionThrown = false
+    def badges = new ShieldsIoBadges(this)
+
     try {
         ansiColor('xterm') {
             dir(workDir) {
@@ -33,6 +39,10 @@ node {
                                 execPattern: 'build/jacoco/*.exec',
                                 classPattern: 'build/classes/groovy/main',
                                 sourcePattern: 'src'
+                            )
+                            badges.uploadCoverageResult(
+                                repo: 'jenkins-shared-library',
+                                branch: env.BRANCH_NAME
                             )
 
                             // then use jacoco endpoint
