@@ -179,14 +179,9 @@ class ShieldsIoBadges implements Serializable {
             ], true)
         }
         uploadCoverageResult(params, 'uploadJacocoCoverageResult', '/jacoco/api/json') { JSONObject json ->
-            this.steps.println("TEST json: '${json}'")
             int numeratorTotal = 0
             int denominatorTotal = 0
             Closure addCategory = { JacocoCategory category ->
-                this.steps.println("TEST category: '${category}'")
-                this.steps.println("TEST json: '${json}'")
-                this.steps.println("TEST json: '${json.branchCoverage}'")
-                this.steps.println("TEST json[category]: '${json[category.toString()]}'")
                 if (!params.ignoreCategories || !params.ignoreCategories.includes(category)) {
                     numeratorTotal += json[category.toString()].covered
                     denominatorTotal += json[category.toString()].total
@@ -198,6 +193,8 @@ class ShieldsIoBadges implements Serializable {
             addCategory(JacocoCategory.INSTRUCTION_COVERAGE)
             addCategory(JacocoCategory.LINE_COVERAGE)
             addCategory(JacocoCategory.METHOD_COVERAGE)
+            this.steps.println("TEST numeratorTotal: '${numeratorTotal}'")
+            this.steps.println("TEST denominatorTotal: '${denominatorTotal}'")
             return [numeratorTotal, denominatorTotal]
         }
     }

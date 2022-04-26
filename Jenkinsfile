@@ -42,7 +42,8 @@ node {
                             )
                             badges.uploadJacocoCoverageResult(
                                 repo: 'jenkins-shared-library',
-                                branch: env.BRANCH_NAME
+                                branch: env.BRANCH_NAME,
+                                ignoreCategories: ['instructionCoverage']
                             )
 
                             // then use jacoco endpoint
