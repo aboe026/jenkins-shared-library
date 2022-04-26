@@ -185,10 +185,11 @@ class ShieldsIoBadges implements Serializable {
             Closure addCategory = { JacocoCategory category ->
                 this.steps.println("TEST category: '${category}'")
                 this.steps.println("TEST json: '${json}'")
-                this.steps.println("TEST json[category]: '${json[category]}'")
+                this.steps.println("TEST json: '${json.branchCoverage}'")
+                this.steps.println("TEST json[category]: '${json[category.toString()]}'")
                 if (!params.ignoreCategories || !params.ignoreCategories.includes(category)) {
-                    numeratorTotal += json[category].covered
-                    denominatorTotal += json[category].total
+                    numeratorTotal += json[category.toString()].covered
+                    denominatorTotal += json[category.toString()].total
                 }
             }
             addCategory(JacocoCategory.BRANCH_COVERAGE)
