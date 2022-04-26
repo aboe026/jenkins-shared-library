@@ -40,7 +40,7 @@ node {
                                 classPattern: 'build/classes/groovy/main',
                                 sourcePattern: 'src'
                             )
-                            badges.uploadCoverageResult(
+                            badges.uploadJacocoCoverageResult(
                                 repo: 'jenkins-shared-library',
                                 branch: env.BRANCH_NAME
                             )
