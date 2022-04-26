@@ -141,7 +141,7 @@ class ShieldsIoBadges implements Serializable {
                 CoberturaCategory.PACKAGES
             ], true)
         }
-        uploadCoverageResult(params, 'uploadCoberturaCoverageResult', '/cobertura/api/json?depth=2') { JSONObject json ->
+        uploadCoverageResult(params, 'uploadCoberturaCoverageResult', '/cobertura/api/json?depth=2', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
             int numeratorTotal = 0
             int denominatorTotal = 0
             Closure addCategory = { JSONObject result ->
@@ -154,7 +154,7 @@ class ShieldsIoBadges implements Serializable {
                 addCategory(result)
             }
             return [ numeratorTotal, denominatorTotal ]
-        }
+        })
     }
 
     /* Can be called in Jenkinsfile like:
@@ -178,11 +178,11 @@ class ShieldsIoBadges implements Serializable {
                 JacocoCategory.METHOD_COVERAGE
             ], true)
         }
-        uploadCoverageResult(params, 'uploadJacocoCoverageResult', '/jacoco/api/json') { JSONObject json ->
+        uploadCoverageResult(params, 'uploadJacocoCoverageResult', '/jacoco/api/json', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
             int numeratorTotal = 0
             int denominatorTotal = 0
             Closure addCategory = { JacocoCategory category ->
-                if (!params.ignoreCategories || !params.ignoreCategories.contains(category)) {
+                if (!params.ignoreCategories || !params.ignoreCategories.contains(category.toString())) {
                     numeratorTotal += json[category.toString()].covered
                     denominatorTotal += json[category.toString()].total
                 }
@@ -193,10 +193,11 @@ class ShieldsIoBadges implements Serializable {
             addCategory(JacocoCategory.INSTRUCTION_COVERAGE)
             addCategory(JacocoCategory.LINE_COVERAGE)
             addCategory(JacocoCategory.METHOD_COVERAGE)
+            // TODO remove (after verifying ignoring works)
             this.steps.println("TEST numeratorTotal: '${numeratorTotal}'")
             this.steps.println("TEST denominatorTotal: '${denominatorTotal}'")
             return [numeratorTotal, denominatorTotal]
-        }
+        })
     }
 
     private void uploadCoverageResult(Map params, String method, String resultsUrlPath, Closure jsonToNumDenom) {
