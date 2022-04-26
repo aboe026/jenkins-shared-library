@@ -145,7 +145,7 @@ class ShieldsIoBadges implements Serializable {
             int numeratorTotal = 0
             int denominatorTotal = 0
             Closure addCategory = { JSONObject result ->
-                if (!params.ignoreCategories || !params.ignoreCategories.includes(result.name)) {
+                if (!params.ignoreCategories || !params.ignoreCategories.contains(result.name)) {
                     numeratorTotal += result.numerator
                     denominatorTotal += result.denominator
                 }
@@ -182,7 +182,7 @@ class ShieldsIoBadges implements Serializable {
             int numeratorTotal = 0
             int denominatorTotal = 0
             Closure addCategory = { JacocoCategory category ->
-                if (!params.ignoreCategories || !params.ignoreCategories.includes(category)) {
+                if (!params.ignoreCategories || !params.ignoreCategories.contains(category)) {
                     numeratorTotal += json[category.toString()].covered
                     denominatorTotal += json[category.toString()].total
                 }
