@@ -184,6 +184,7 @@ class ShieldsIoBadges implements Serializable {
             int denominatorTotal = 0
             Closure addCategory = { JacocoCategory category ->
                 this.steps.println("TEST category: '${category}'")
+                this.steps.println("TEST json: '${json}'")
                 this.steps.println("TEST json[category]: '${json[category]}'")
                 if (!params.ignoreCategories || !params.ignoreCategories.includes(category)) {
                     numeratorTotal += json[category].covered
