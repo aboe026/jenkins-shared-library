@@ -24,7 +24,7 @@ class ParameterValidator {
         }
         def received = isArray ? params[propertyName] : [params[propertyName]] // groovylint-disable-line NoDef, VariableTypeRequired
         received.each { value ->
-            if (!allowedValues.contains(value)) {
+            if (!allowedValues.contains(value.toString())) {
                 throw new Exception("Invalid value \"${value}\" for parameter \"${propertyName}\" with method \"${methodName}\": Must be one of \"${allowedValues.join('|')}\".")
             }
         }
