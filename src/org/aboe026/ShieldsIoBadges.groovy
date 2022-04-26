@@ -181,7 +181,7 @@ class ShieldsIoBadges implements Serializable {
         uploadCoverageResult(params, 'uploadJacocoCoverageResult', '/jacoco/api/json') { JSONObject json ->
             int numeratorTotal = 0
             int denominatorTotal = 0
-            Closure addCategory { JacocoCategory category ->
+            Closure addCategory = { JacocoCategory category ->
                 if (!params.ignoreCategories || !params.ignoreCategories.includes(category)) {
                     numeratorTotal += json[category].covered
                     denominatorTotal += json[category].total
