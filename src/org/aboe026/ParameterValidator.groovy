@@ -22,10 +22,16 @@ class ParameterValidator {
         if (!allowedValues) {
             throw new Exception("Invalid parameter \"allowedValues\" for method \"enumerable\" called by method \"${methodName}\":  Must be non-empty array.")
         }
+        List<String> allowedStringValues = []
+        allowedValues.each { value ->
+            allowedStringValues.add(value.toString())
+        }
         def received = isArray ? params[propertyName] : [params[propertyName]] // groovylint-disable-line NoDef, VariableTypeRequired
         received.each { value ->
-            if (!allowedValues.contains(value.toString())) {
-                throw new Exception("Invalid value \"${value}\" for parameter \"${propertyName}\" with method \"${methodName}\": Must be one of \"${allowedValues.join('|')}\".")
+            if (!allowedStringValues.contains(value.toString())) {
+                throw new Exception(
+                    "Invalid value \"${value}\" for parameter \"${propertyName}\" with method \"${methodName}\": Must be one of \"${allowedStringValues.join('|')}\"."
+                )
             }
         }
     }
