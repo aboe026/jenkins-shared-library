@@ -40,13 +40,13 @@ node {
                                 classPattern: 'build/classes/groovy/main',
                                 sourcePattern: 'src'
                             )
-                            if (env.BRANCH_NAME == 'main') {
+                            // if (env.BRANCH_NAME == 'main') {
                                 badges.uploadJacocoCoverageResult(
                                     repo: 'jenkins-shared-library',
                                     branch: env.BRANCH_NAME,
                                     ignoreCategories: ['instructionCoverage']
                                 )
-                            }
+                            // }
                         }
                     }
                 }
