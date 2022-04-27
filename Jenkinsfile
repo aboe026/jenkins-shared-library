@@ -41,11 +41,11 @@ node {
                                 sourcePattern: 'src'
                             )
                             // if (env.BRANCH_NAME == 'main') {
-                                badges.uploadJacocoCoverageResult(
-                                    repo: 'jenkins-shared-library',
-                                    branch: env.BRANCH_NAME,
-                                    ignoreCategories: ['instructionCoverage']
-                                )
+                            badges.uploadJacocoCoverageResult(
+                                repo: 'jenkins-shared-library',
+                                branch: env.BRANCH_NAME,
+                                ignoreCategories: ['instructionCoverage']
+                            )
                             // }
                         }
                     }
