@@ -1,5 +1,8 @@
 # jenkins-shared-library
 
+![build](https://img.shields.io/endpoint?url=https://aboe026.github.io/shields.io-badge-results/badge-results/jenkins-shared-library/main/build.json)
+![coverage](https://img.shields.io/endpoint?url=https://aboe026.github.io/shields.io-badge-results/badge-results/jenkins-shared-library/main/coverage.json)
+
 Jenkins CI shared library files.
 
 **Note**: When running `./gradlew` commands using Git Bash on Windows, may need to set environment variable `TERM=cygwin` to properly format control characters.

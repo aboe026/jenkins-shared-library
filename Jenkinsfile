@@ -40,16 +40,13 @@ node {
                                 classPattern: 'build/classes/groovy/main',
                                 sourcePattern: 'src'
                             )
-                            badges.uploadJacocoCoverageResult(
-                                repo: 'jenkins-shared-library',
-                                branch: env.BRANCH_NAME,
-                                ignoreCategories: ['instructionCoverage']
-                            )
-
-                            // then use jacoco endpoint
-                            // http://localhost:8080/job/jenkins-shared-library/job/jenkins-shared-library/view/change-requests/job/PR-4/5/jacoco/api/json?pretty=true
-                            // to call for nums/denoms
-                            // rename uploadCoverage to uploadJacocoCoverage and uploadCoberturaCoverage
+                            if (env.BRANCH_NAME == 'main') {
+                                badges.uploadJacocoCoverageResult(
+                                    repo: 'jenkins-shared-library',
+                                    branch: env.BRANCH_NAME,
+                                    ignoreCategories: ['instructionCoverage']
+                                )
+                            }
                         }
                     }
                 }

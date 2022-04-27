@@ -18,7 +18,7 @@ class ParameterValidator {
     }
 
     @NonCPS
-    static void enumerable(Map params, String methodName, String propertyName, List<String> allowedValues, boolean isArray = false) {
+    static void enumerable(Map params, String methodName, String propertyName, List<String> allowedValues) {
         if (!allowedValues) {
             throw new Exception("Invalid parameter \"allowedValues\" for method \"enumerable\" called by method \"${methodName}\":  Must be non-empty array.")
         }
@@ -26,7 +26,7 @@ class ParameterValidator {
         allowedValues.each { value ->
             allowedStringValues.add(value.toString())
         }
-        def received = isArray ? params[propertyName] : [params[propertyName]] // groovylint-disable-line NoDef, VariableTypeRequired
+        def received = ParameterValidator.isArray(params[propertyName]) ? params[propertyName] : [params[propertyName]] // groovylint-disable-line NoDef, VariableTypeRequired
         received.each { value ->
             if (!allowedStringValues.contains(value.toString())) {
                 throw new Exception(
@@ -56,6 +56,13 @@ class ParameterValidator {
             return defaultValue
         }
         return params[propertyName]
+    }
+
+    @NonCPS
+    private static boolean isArray(def object) { // groovylint-disable-line MethodParameterTypeRequired, NoDef
+        return [Collection, Object[]].any { arrayClass ->
+            arrayClass.isAssignableFrom(object.getClass())
+        }
     }
 
 }
