@@ -1399,6 +1399,40 @@ class ShieldsIoBadges__uploadJacocoCoverageResultSpec extends Specification {
 
 }
 
+class ShieldsIoBadges__isCategoryIgnoredSpec extends Specification {
+
+    def 'If ignores null, returns false'() {
+        expect:
+        new ShieldsIoBadges(Stub(WorkflowScript)).isCategoryIgnored(null, 'hello') == false
+    }
+
+    def 'If ignores empty, returns false'() {
+        expect:
+        new ShieldsIoBadges(Stub(WorkflowScript)).isCategoryIgnored([], 'hello') == false
+    }
+
+    def 'If ignores does not contain category, returns false'() {
+        expect:
+        new ShieldsIoBadges(Stub(WorkflowScript)).isCategoryIgnored(['world'], 'hello') == false
+    }
+
+    def 'If ignores contains only category, returns true'() {
+        expect:
+        new ShieldsIoBadges(Stub(WorkflowScript)).isCategoryIgnored(['hello'], 'hello') == true
+    }
+
+    def 'If ignores contains category first, returns true'() {
+        expect:
+        new ShieldsIoBadges(Stub(WorkflowScript)).isCategoryIgnored(['hello', 'world'], 'hello') == true
+    }
+
+    def 'If ignores contains category last, returns true'() {
+        expect:
+        new ShieldsIoBadges(Stub(WorkflowScript)).isCategoryIgnored(['world', 'hello'], 'hello') == true
+    }
+
+}
+
 class ShieldsIoBadges__getAveragePercentageSpec extends Specification {
 
     def 'If called with empty array, 0 returned'() {

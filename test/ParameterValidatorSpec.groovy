@@ -273,3 +273,77 @@ class ParameterValidator__defaultIfNotSetSpec extends Specification {
     }
 
 }
+
+class ParameterValidator__isArraySpec extends Specification {
+
+    def 'If no params, returns false'() {
+        expect:
+        ParameterValidator.isArray() == false
+    }
+
+    def 'If null param, returns false'() {
+        expect:
+        ParameterValidator.isArray(null) == false
+    }
+
+    def 'If empty string param, returns false'() {
+        expect:
+        ParameterValidator.isArray('') == false
+    }
+
+    def 'If 0 param, returns false'() {
+        expect:
+        ParameterValidator.isArray(0) == false
+    }
+
+    def 'If string param, returns false'() {
+        expect:
+        ParameterValidator.isArray('notarray') == false
+    }
+
+    def 'If integer param, returns false'() {
+        expect:
+        ParameterValidator.isArray(42) == false
+    }
+
+    def 'If empty map param, returns false'() {
+        expect:
+        ParameterValidator.isArray([:]) == false
+    }
+
+    def 'If empty array param, returns true'() {
+        expect:
+        ParameterValidator.isArray([]) == true
+    }
+
+    def 'If single string array param, returns true'() {
+        expect:
+        ParameterValidator.isArray(['hello']) == true
+    }
+
+    def 'If single integer array param, returns true'() {
+        expect:
+        ParameterValidator.isArray([42]) == true
+    }
+
+    def 'If single boolean array param, returns true'() {
+        expect:
+        ParameterValidator.isArray([false]) == true
+    }
+
+    def 'If multiple string array param, returns true'() {
+        expect:
+        ParameterValidator.isArray(['hello', 'world']) == true
+    }
+
+    def 'If multiple integer array param, returns true'() {
+        expect:
+        ParameterValidator.isArray([42, 2043]) == true
+    }
+
+    def 'If multiple boolean array param, returns true'() {
+        expect:
+        ParameterValidator.isArray([false, true]) == true
+    }
+
+}
