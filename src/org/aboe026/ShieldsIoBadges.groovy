@@ -144,18 +144,16 @@ class ShieldsIoBadges implements Serializable {
             ])
         }
         uploadCoverageResult(params, 'uploadCoberturaCoverageResult', '/cobertura/api/json?depth=2', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
-            int numeratorTotal = 0
-            int denominatorTotal = 0
+            List<BigDecimal> averages = []
             Closure addCategory = { JSONObject result ->
                 if (!this.isCategoryIgnored(params.ignoreCategories, result.name)) {
-                    numeratorTotal += result.numerator
-                    denominatorTotal += result.denominator
+                    averages.add(result.numerator / result.denominator)
                 }
             }
             json.results.elements.each { result ->
                 addCategory(result)
             }
-            return [ numeratorTotal, denominatorTotal ]
+            return getAveragePercentage(averages)
         })
     }
 
@@ -181,14 +179,12 @@ class ShieldsIoBadges implements Serializable {
             ])
         }
         uploadCoverageResult(params, 'uploadJacocoCoverageResult', '/jacoco/api/json', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
-            int numeratorTotal = 0
-            int denominatorTotal = 0
+            List<BigDecimal> averages = []
             Closure addCategory = { JacocoCategory category ->
                 JSONObject categoryObject = json[category.toString()]
                 if (categoryObject) {
                     if (!this.isCategoryIgnored(params.ignoreCategories, category.toString())) {
-                        numeratorTotal += categoryObject.covered
-                        denominatorTotal += categoryObject.total
+                        averages.add(categoryObject.covered / categoryObject.total)
                     }
                 }
             }
@@ -198,11 +194,11 @@ class ShieldsIoBadges implements Serializable {
             addCategory(JacocoCategory.INSTRUCTION_COVERAGE)
             addCategory(JacocoCategory.LINE_COVERAGE)
             addCategory(JacocoCategory.METHOD_COVERAGE)
-            return [numeratorTotal, denominatorTotal]
+            return getAveragePercentage(averages)
         })
     }
 
-    private void uploadCoverageResult(Map params, String method, String resultsUrlPath, Closure jsonToNumDenom) {
+    private void uploadCoverageResult(Map params, String method, String resultsUrlPath, Closure getPercentageFromJson) {
         ParameterValidator.required(params, method, 'repo')
         String buildUrl = ParameterValidator.defaultIfNotSet(params, 'buildUrl', this.steps.env.BUILD_URL)
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
@@ -218,9 +214,7 @@ class ShieldsIoBadges implements Serializable {
         )
         JSONObject coverageJson = this.steps.readJSON text: response.content
 
-        def (int numeratorTotal, int denominatorTotal) = jsonToNumDenom(coverageJson)
-
-        int percentage = getCoveragePercentage(numeratorTotal, denominatorTotal)
+        int percentage = getPercentageFromJson(coverageJson)
 
         String color = ''
         switch (percentage) {
@@ -261,15 +255,15 @@ class ShieldsIoBadges implements Serializable {
         return ignoreCategories && ignoreCategories.contains(category.toString())
     }
 
-    private int getCoveragePercentage(int numerator, int denominator) {
-        int resolvedNumerator = numerator > 0 ? numerator : 0
-        int resolvedDenominator = denominator
-        if (resolvedDenominator < 1) {
-            resolvedNumerator = 0
-            resolvedDenominator = 1
+    private int getAveragePercentage(List<BigDecimal> averages) {
+        if (averages.size() == 0) {
+            return 0
         }
-        BigDecimal overallCoverage = resolvedNumerator / resolvedDenominator
-        return Math.floor(overallCoverage * 100)
+        BigDecimal total = 0
+        averages.each { average ->
+            total += average
+        }
+        return Math.floor(total / averages.size() * 100)
     }
 
 }

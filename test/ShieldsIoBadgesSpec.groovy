@@ -1399,71 +1399,21 @@ class ShieldsIoBadges__uploadJacocoCoverageResultSpec extends Specification {
 
 }
 
-class ShieldsIoBadges__getCoveragePercentageSpec extends Specification {
+class ShieldsIoBadges__getAveragePercentageSpec extends Specification {
 
-    def 'If called with zeros, 0 returned'() {
+    def 'If called with empty array, 0 returned'() {
         expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(0, 0) == 0
+        new ShieldsIoBadges(Stub(WorkflowScript)).getAveragePercentage([]) == 0
     }
 
-    def 'If called with negatives, 0 returned'() {
+    def 'If called with single array, array value returned'() {
         expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(-1, -1) == 0
+        new ShieldsIoBadges(Stub(WorkflowScript)).getAveragePercentage([0.1]) == 10
     }
 
-    def 'If called with negative numerator and zero denominator, 0 returned'() {
+    def 'If called with multiple array, average array value returned'() {
         expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(-1, 0) == 0
-    }
-
-    def 'If called with zero numerator and negative denominator, 0 returned'() {
-        expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(0, -1) == 0
-    }
-
-    def 'If called with positive numerator and zero denominator, 0 returned'() {
-        expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(1, 0) == 0
-    }
-
-    def 'If called with zero numerator and positive denominator, 0 returned'() {
-        expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(0, 1) == 0
-    }
-
-    def 'If called with positive numerator and negative denominator, 0 returned'() {
-        expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(1, -1) == 0
-    }
-
-    def 'If called with negative numerator and positive denominator, 0 returned'() {
-        expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(-1, 1) == 0
-    }
-
-    def 'If called with non-repeating decimal 1/2, returns truncated floor 50'() {
-        expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(1, 2) == 50
-    }
-
-    def 'If called with repeating decimal 1/3, returns truncated floor 33'() {
-        expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(1, 3) == 33
-    }
-
-    def 'If called with repeating decimal 2/3, returns truncated floor 66'() {
-        expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(2, 3) == 66
-    }
-
-    def 'If called with long decimal 1/32, returns truncated floor 3'() {
-        expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(1, 32) == 3
-    }
-
-    def 'If called with complete number 1/1, returns 100'() {
-        expect:
-        new ShieldsIoBadges(Stub(WorkflowScript)).getCoveragePercentage(1, 1) == 100
+        new ShieldsIoBadges(Stub(WorkflowScript)).getAveragePercentage([0.1, 0.2]) == 15
     }
 
 }
