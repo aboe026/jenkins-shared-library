@@ -74,18 +74,20 @@ class ShieldsIoBadges implements Serializable {
      */
     void uploadBuildResult(Map params) {
         ParameterValidator.required(params, 'uploadBuildResult', 'repo')
-        ParameterValidator.required(params, 'uploadBuildResult', 'status')
-        ParameterValidator.enumerable(params, 'uploadBuildResult', 'status', [
-            Result.ABORTED.toString(),
-            Result.FAILURE.toString(),
-            Result.NOT_BUILT.toString(),
-            Result.SUCCESS.toString(),
-            Result.UNSTABLE.toString(),
-        ])
+        if (params.result) {
+            ParameterValidator.enumerable(params, 'uploadBuildResult', 'result', [
+                Result.ABORTED.toString(),
+                Result.FAILURE.toString(),
+                Result.NOT_BUILT.toString(),
+                Result.SUCCESS.toString(),
+                Result.UNSTABLE.toString(),
+            ])
+        }
+        String result = ParameterValidator.defaultIfNotSet(params, 'result', this.steps.currentBuild.result)
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         String message = ''
         String color = ''
-        switch (params.status) {
+        switch (result) {
             case Result.SUCCESS.toString():
                 message = 'passing'
                 color = ShieldsIoBadgeColor.BRIGHT_GREEN
@@ -145,7 +147,7 @@ class ShieldsIoBadges implements Serializable {
             int numeratorTotal = 0
             int denominatorTotal = 0
             Closure addCategory = { JSONObject result ->
-                if (!params.ignoreCategories || !params.ignoreCategories.contains(result.name)) {
+                if (!this.isCategoryIgnored(params.ignoreCategories, result.name)) {
                     numeratorTotal += result.numerator
                     denominatorTotal += result.denominator
                 }
@@ -182,9 +184,12 @@ class ShieldsIoBadges implements Serializable {
             int numeratorTotal = 0
             int denominatorTotal = 0
             Closure addCategory = { JacocoCategory category ->
-                if (!params.ignoreCategories || !params.ignoreCategories.contains(category.toString())) {
-                    numeratorTotal += json[category.toString()].covered
-                    denominatorTotal += json[category.toString()].total
+                JSONObject categoryObject = json[category.toString()]
+                if (categoryObject) {
+                    if (!this.isCategoryIgnored(params.ignoreCategories, category.toString())) {
+                        numeratorTotal += categoryObject.covered
+                        denominatorTotal += categoryObject.total
+                    }
                 }
             }
             addCategory(JacocoCategory.BRANCH_COVERAGE)
@@ -199,11 +204,12 @@ class ShieldsIoBadges implements Serializable {
 
     private void uploadCoverageResult(Map params, String method, String resultsUrlPath, Closure jsonToNumDenom) {
         ParameterValidator.required(params, method, 'repo')
+        String buildUrl = ParameterValidator.defaultIfNotSet(params, 'buildUrl', this.steps.env.BUILD_URL)
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
 
-        URL buildUrl = new URL(this.steps.env.BUILD_URL)
-        String coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + resultsUrlPath, null)
+        URL buildUrlObject = new URL(buildUrl)
+        String coverageUrl = new URL(buildUrlObject.getProtocol(), buildUrlObject.getHost(), buildUrlObject.getPort(), buildUrlObject.getPath() + resultsUrlPath, null)
 
         ResponseContentSupplier response = this.steps.httpRequest(
             url: coverageUrl,
@@ -214,8 +220,8 @@ class ShieldsIoBadges implements Serializable {
 
         def (int numeratorTotal, int denominatorTotal) = jsonToNumDenom(coverageJson)
 
-        BigDecimal overallCoverage = numeratorTotal / denominatorTotal
-        int percentage = Math.round(Math.floor(overallCoverage * 100))
+        int percentage = getCoveragePercentage(numeratorTotal, denominatorTotal)
+
         String color = ''
         switch (percentage) {
             case 100:
@@ -249,6 +255,21 @@ class ShieldsIoBadges implements Serializable {
             quietPeriod: 0,
             wait: false
         )
+    }
+
+    private boolean isCategoryIgnored(List<String> ignoreCategories, String category) {
+        return ignoreCategories && ignoreCategories.contains(category.toString())
+    }
+
+    private int getCoveragePercentage(int numerator, int denominator) {
+        int resolvedNumerator = numerator > 0 ? numerator : 0
+        int resolvedDenominator = denominator
+        if (resolvedDenominator < 1) {
+            resolvedNumerator = 0
+            resolvedDenominator = 1
+        }
+        BigDecimal overallCoverage = resolvedNumerator / resolvedDenominator
+        return Math.floor(overallCoverage * 100)
     }
 
 }

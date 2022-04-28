@@ -73,12 +73,10 @@ To generage code coverage, run
 ./gradlew jacocoTestReport
 ```
 
-An HTML report of coverage can then be viewed in `build/reports/jacoco/test/html/index.html`.
-
-To convert the Jacoco XML to Cobertura XML, run
+To view the HTML coverage report in your default browser, run
 
 ```sh
-./gradlew jacobo
+./gradlew viewCoverage
 ```
 
 ## Print

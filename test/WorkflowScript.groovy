@@ -12,6 +12,12 @@ abstract class WorkflowScript extends CpsScript { // groovylint-disable-line Abs
         BUILD_URL: 'https://mock-workflow-script:440/build/url'
     ]
 
+    Map getCurrentBuild() {
+        return [
+            result: 'to be mocked'
+        ]
+    }
+
     Map string(Map map) {
         return map
     }

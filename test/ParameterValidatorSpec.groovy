@@ -161,13 +161,22 @@ class ParameterValidator__enumerableSpec extends Specification {
         exception.message == 'Invalid value "bar" for parameter "foo" with method "hello": Must be one of "world|lorem".'
     }
 
-    def 'If not in triple allowed, throws exception'() {
+    def 'If double not in single allowed, throws exception'() {
         when:
-        ParameterValidator.enumerable([ foo: 'bar'], 'hello', 'foo', ['world', 'lorem', 'ipsum'])
+        ParameterValidator.enumerable([ foo: ['bar', 'bat']], 'hello', 'foo', ['world'])
 
         then:
         def exception = thrown(Exception)
-        exception.message == 'Invalid value "bar" for parameter "foo" with method "hello": Must be one of "world|lorem|ipsum".'
+        exception.message == 'Invalid value "bar" for parameter "foo" with method "hello": Must be one of "world".'
+    }
+
+    def 'If double not in double allowed, throws exception'() {
+        when:
+        ParameterValidator.enumerable([ foo: ['bar', 'bat']], 'hello', 'foo', ['world', 'lorem'])
+
+        then:
+        def exception = thrown(Exception)
+        exception.message == 'Invalid value "bar" for parameter "foo" with method "hello": Must be one of "world|lorem".'
     }
 
     def 'If in single allowed, no exception thrown'() {
@@ -194,25 +203,41 @@ class ParameterValidator__enumerableSpec extends Specification {
         notThrown(Exception)
     }
 
-    def 'If in triple allowed first, no exception thrown'() {
+    def 'If doubles match allowed, no exception thrown'() {
         when:
-        ParameterValidator.enumerable([ foo: 'bar'], 'hello', 'foo', ['bar', 'world', 'lorem'])
+        ParameterValidator.enumerable([ foo: ['bar', 'bat']], 'hello', 'foo', ['bar', 'bat'])
 
         then:
         notThrown(Exception)
     }
 
-    def 'If in triple allowed second, no exception thrown'() {
+    def 'If doubles reverse allowed, no exception thrown'() {
         when:
-        ParameterValidator.enumerable([ foo: 'bar'], 'hello', 'foo', ['world', 'bar', 'lorem'])
+        ParameterValidator.enumerable([ foo: ['bar', 'bat']], 'hello', 'foo', ['bat', 'bar'])
 
         then:
         notThrown(Exception)
     }
 
-    def 'If in triple allowed third, no exception thrown'() {
+    def 'If doubles in triple allowed first and middle, no exception thrown'() {
         when:
-        ParameterValidator.enumerable([ foo: 'bar'], 'hello', 'foo', ['world', 'lorem', 'bar'])
+        ParameterValidator.enumerable([ foo: ['bar', 'bat']], 'hello', 'foo', ['bar', 'bat', 'baz'])
+
+        then:
+        notThrown(Exception)
+    }
+
+    def 'If doubles in triple allowed first and last, no exception thrown'() {
+        when:
+        ParameterValidator.enumerable([ foo: ['bar', 'baz']], 'hello', 'foo', ['bar', 'bat', 'baz'])
+
+        then:
+        notThrown(Exception)
+    }
+
+    def 'If doubles in triple allowed middle and last, no exception thrown'() {
+        when:
+        ParameterValidator.enumerable([ foo: ['bat', 'baz']], 'hello', 'foo', ['bar', 'bat', 'baz'])
 
         then:
         notThrown(Exception)

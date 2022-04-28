@@ -115,3 +115,9 @@ task mergeJUnitReports {
         }
     }
 }
+
+task viewCoverage {
+    doLast {
+        java.awt.Desktop.desktop.browse project.file('build/reports/jacoco/test/html/index.html').toURI()
+    }
+}
