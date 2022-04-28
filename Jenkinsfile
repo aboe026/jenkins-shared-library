@@ -9,6 +9,7 @@ node {
     def gradleImage = 'gradle:7.4'
     def exceptionThrown = false
     def badges = new ShieldsIoBadges(this)
+    def uploadBadges = env.BRANCH_NAME == 'main'
 
     try {
         ansiColor('xterm') {
@@ -40,13 +41,13 @@ node {
                                 classPattern: 'build/classes/groovy/main',
                                 sourcePattern: 'src'
                             )
-                            // if (env.BRANCH_NAME == 'main') {
-                            badges.uploadJacocoCoverageResult(
-                                repo: 'jenkins-shared-library',
-                                branch: env.BRANCH_NAME,
-                                ignoreCategories: ['instructionCoverage']
-                            )
-                            // }
+                            if (uploadBadges) {
+                                badges.uploadJacocoCoverageResult(
+                                    repo: 'jenkins-shared-library',
+                                    branch: env.BRANCH_NAME,
+                                    ignoreCategories: ['instructionCoverage']
+                                )
+                            }
                         }
                     }
                 }
@@ -57,6 +58,12 @@ node {
         println 'Exception was caught in try block of jenkins job.'
         println err
     } finally {
+        //if (uploadBadges) {
+        badges.uploadBuildResult(
+            repo: 'jenkins-shared-library',
+            branch: env.BRANCH_NAME
+        )
+        // }
         stage('Cleanup') {
             try {
                 sh "rm -rf ${workDir}"
