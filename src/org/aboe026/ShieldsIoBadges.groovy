@@ -84,6 +84,7 @@ class ShieldsIoBadges implements Serializable {
             ])
         }
         this.steps.println("TEST this.steps.currentBuild.result: '${this.steps.currentBuild.result}'")
+        this.steps.println("TEST this.steps.currentBuild.currentResult: '${this.steps.currentBuild.currentResult}'")
         String result = ParameterValidator.defaultIfNotSet(params, 'result', this.steps.currentBuild.result)
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         String message = ''
