@@ -9,8 +9,8 @@ import net.sf.json.JSONObject
 class ShieldsIoBadges implements Serializable {
 
     private static final long serialVersionUID = 1L
-    Script steps
-    String setBadgeResultsJob
+    private final Script steps
+    private final String setBadgeResultsJob
 
     // Not allowed, need script steps for method executions
     ShieldsIoBadges() {
@@ -26,11 +26,7 @@ class ShieldsIoBadges implements Serializable {
      *      def badges = new ShieldsIoBadges(this)
      */
     ShieldsIoBadges(Script steps) {
-        if (steps == null) {
-            throw new Exception('Invalid parameter "null" passed to "ShieldsIoBadges" constructor: Must be non-null Script object.')
-        }
-        this.steps = steps
-        this.setBadgeResultsJob = '/shields.io-badge-results/set-badge-result'
+        this(steps, '/shields.io-badge-results/set-badge-result')
     }
 
     /** Can be instantiated in a Jenkinsfile like:
@@ -42,11 +38,11 @@ class ShieldsIoBadges implements Serializable {
      *      def badges = new ShieldsIoBadges(this, '/path/in/jenkins/to/set-badge-result-job')
      */
     ShieldsIoBadges(Script steps, String setBadgeResultsJob) {
-        if (steps == null) {
-            throw new Exception('Invalid first parameter "null" passed to "ShieldsIoBadges" constructor: Must be non-null Script object.')
+        if (!steps) {
+            throw new Exception("Invalid first parameter \"${steps}\" passed to \"ShieldsIoBadges\" constructor: Must be non-null Script object.")
         }
         this.steps = steps
-        this.setBadgeResultsJob = setBadgeResultsJob != null ? setBadgeResultsJob : '/shields.io-badge-results/set-badge-result'
+        this.setBadgeResultsJob = setBadgeResultsJob ?: '/shields.io-badge-results/set-badge-result'
     }
 
     /** Can be instantiated in a Jenkinsfile like:
@@ -71,44 +67,45 @@ class ShieldsIoBadges implements Serializable {
      *     if (env.BRANCH_NAME == 'main') {
      *         badges.uploadBuildResult(
      *             repo: 'data-structures',
-     *             status: currentBuild.currentResult,
      *             branch: env.BRANCH_NAME
      *         )
      *     }
      */
     void uploadBuildResult(Map params) {
-        ParameterValidator.required(params, 'uploadBuildResult', 'status')
         ParameterValidator.required(params, 'uploadBuildResult', 'repo')
-        ParameterValidator.enumerable(params, 'uploadBuildResult', 'status', [
-            Result.ABORTED.toString(),
-            Result.FAILURE.toString(),
-            Result.NOT_BUILT.toString(),
-            Result.SUCCESS.toString(),
-            Result.UNSTABLE.toString(),
-        ])
+        if (params.result) {
+            ParameterValidator.enumerable(params, 'uploadBuildResult', 'result', [
+                Result.ABORTED.toString(),
+                Result.FAILURE.toString(),
+                Result.NOT_BUILT.toString(),
+                Result.SUCCESS.toString(),
+                Result.UNSTABLE.toString(),
+            ])
+        }
+        String result = ParameterValidator.defaultIfNotSet(params, 'result', this.steps.currentBuild.currentResult)
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         String message = ''
         String color = ''
-        switch (params.status) {
+        switch (result) {
             case Result.SUCCESS.toString():
                 message = 'passing'
-                color = Color.BRIGHT_GREEN
+                color = ShieldsIoBadgeColor.BRIGHT_GREEN
                 break
             case Result.UNSTABLE.toString():
                 message = 'unstable'
-                color = Color.YELLOW
+                color = ShieldsIoBadgeColor.YELLOW
                 break
             case Result.NOT_BUILT.toString():
                 message = 'none'
-                color = Color.LIGHT_GREY
+                color = ShieldsIoBadgeColor.LIGHT_GREY
                 break
             case Result.ABORTED.toString():
                 message = 'aborted'
-                color = Color.ORANGE
+                color = ShieldsIoBadgeColor.ORANGE
                 break
             default:
                 message = 'failed'
-                color = Color.RED
+                color = ShieldsIoBadgeColor.RED
                 break
         }
         this.steps.build(
@@ -118,7 +115,7 @@ class ShieldsIoBadges implements Serializable {
                 this.steps.string(name: 'branch', value: branch),
                 this.steps.string(name: 'label', value: 'build'),
                 this.steps.string(name: 'message', value: message),
-                this.steps.string(name: 'color', value: color),
+                this.steps.string(name: 'color', value: color)
             ],
             quietPeriod: 0,
             wait: false
@@ -128,19 +125,86 @@ class ShieldsIoBadges implements Serializable {
     /* Can be called in Jenkinsfile like:
      *
      *     if (env.BRANCH_NAME == 'main') {
-     *         badges.uploadCoverageResult(
+     *         badges.uploadCoberturaCoverageResult(
      *             repo: 'data-structures',
      *             branch: env.BRANCH_NAME
      *         )
      *     }
      */
-    void uploadCoverageResult(Map params) {
-        ParameterValidator.required(params, 'uploadCoverageResult', 'repo')
+    void uploadCoberturaCoverageResult(Map params) {
+        if (params && params.ignoreCategories) {
+            ParameterValidator.enumerable(params, 'uploadCoberturaCoverageResult', 'ignoreCategories', [
+                CoberturaCategory.CLASSES,
+                CoberturaCategory.CONDITIONALS,
+                CoberturaCategory.FILES,
+                CoberturaCategory.LINES,
+                CoberturaCategory.METHODS,
+                CoberturaCategory.PACKAGES
+            ])
+        }
+        uploadCoverageResult(params, 'uploadCoberturaCoverageResult', '/cobertura/api/json?depth=2', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
+            List<BigDecimal> averages = []
+            Closure addCategory = { JSONObject result ->
+                if (!this.isCategoryIgnored(params.ignoreCategories, result.name)) {
+                    averages.add(result.numerator / result.denominator)
+                }
+            }
+            json.results.elements.each { result ->
+                addCategory(result)
+            }
+            return getAveragePercentage(averages)
+        })
+    }
+
+    /* Can be called in Jenkinsfile like:
+     *
+     *     if (env.BRANCH_NAME == 'main') {
+     *         badges.uploadJacocoCoverageResult(
+     *             repo: 'data-structures',
+     *             branch: env.BRANCH_NAME,
+     *             ignoreCategories: ['instructionCoverage']
+     *         )
+     *     }
+     */
+    void uploadJacocoCoverageResult(Map params) {
+        if (params && params.ignoreCategories) {
+            ParameterValidator.enumerable(params, 'uploadJacocoCoverageResult', 'ignoreCategories', [
+                JacocoCategory.BRANCH_COVERAGE,
+                JacocoCategory.CLASS_COVERAGE,
+                JacocoCategory.COMPLEXITY_SCORE,
+                JacocoCategory.INSTRUCTION_COVERAGE,
+                JacocoCategory.LINE_COVERAGE,
+                JacocoCategory.METHOD_COVERAGE
+            ])
+        }
+        uploadCoverageResult(params, 'uploadJacocoCoverageResult', '/jacoco/api/json', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
+            List<BigDecimal> averages = []
+            Closure addCategory = { JacocoCategory category ->
+                JSONObject categoryObject = json[category.toString()]
+                if (categoryObject) {
+                    if (!this.isCategoryIgnored(params.ignoreCategories, category.toString())) {
+                        averages.add(categoryObject.covered / categoryObject.total)
+                    }
+                }
+            }
+            addCategory(JacocoCategory.BRANCH_COVERAGE)
+            addCategory(JacocoCategory.CLASS_COVERAGE)
+            addCategory(JacocoCategory.COMPLEXITY_SCORE)
+            addCategory(JacocoCategory.INSTRUCTION_COVERAGE)
+            addCategory(JacocoCategory.LINE_COVERAGE)
+            addCategory(JacocoCategory.METHOD_COVERAGE)
+            return getAveragePercentage(averages)
+        })
+    }
+
+    private void uploadCoverageResult(Map params, String method, String resultsUrlPath, Closure getPercentageFromJson) {
+        ParameterValidator.required(params, method, 'repo')
+        String buildUrl = ParameterValidator.defaultIfNotSet(params, 'buildUrl', this.steps.env.BUILD_URL)
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
 
-        URL buildUrl = new URL(this.steps.env.BUILD_URL)
-        String coverageUrl = new URL(buildUrl.getProtocol(), buildUrl.getHost(), buildUrl.getPort(), buildUrl.getPath() + '/cobertura/api/json?depth=2', null)
+        URL buildUrlObject = new URL(buildUrl)
+        String coverageUrl = new URL(buildUrlObject.getProtocol(), buildUrlObject.getHost(), buildUrlObject.getPort(), buildUrlObject.getPath() + resultsUrlPath, null)
 
         ResponseContentSupplier response = this.steps.httpRequest(
             url: coverageUrl,
@@ -149,33 +213,27 @@ class ShieldsIoBadges implements Serializable {
         )
         JSONObject coverageJson = this.steps.readJSON text: response.content
 
-        int numeratorTotal = 0
-        int denominatorTotal = 0
-        coverageJson.results.elements.each { result ->
-            numeratorTotal += result.numerator
-            denominatorTotal += result.denominator
-        }
-        BigDecimal overallCoverage = numeratorTotal / denominatorTotal
-        int percentage = Math.round(Math.floor(overallCoverage * 100))
+        int percentage = getPercentageFromJson(coverageJson)
+
         String color = ''
         switch (percentage) {
             case 100:
-                color = Color.BRIGHT_GREEN
+                color = ShieldsIoBadgeColor.BRIGHT_GREEN
                 break
             case 90..100:
-                color = Color.GREEN
+                color = ShieldsIoBadgeColor.GREEN
                 break
             case 80..90:
-                color = Color.YELLOW_GREEN
+                color = ShieldsIoBadgeColor.YELLOW_GREEN
                 break
             case 70..80:
-                color = Color.YELLOW
+                color = ShieldsIoBadgeColor.YELLOW
                 break
             case 60..70:
-                color = Color.ORANGE
+                color = ShieldsIoBadgeColor.ORANGE
                 break
             default:
-                color = Color.RED
+                color = ShieldsIoBadgeColor.RED
                 break
         }
         this.steps.build(
@@ -192,88 +250,19 @@ class ShieldsIoBadges implements Serializable {
         )
     }
 
-}
+    private boolean isCategoryIgnored(List<String> ignoreCategories, String category) {
+        return ignoreCategories && ignoreCategories.contains(category.toString())
+    }
 
-enum Color {
-
-    BRIGHT_GREEN {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'brightgreen'
+    private int getAveragePercentage(List<BigDecimal> averages) {
+        if (averages.size() == 0) {
+            return 0
         }
-
-    },
-
-    GREEN {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'green'
+        BigDecimal total = 0
+        averages.each { average ->
+            total += average
         }
-
-    },
-
-    YELLOW_GREEN {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'yellowgreen'
-        }
-
-    },
-
-    YELLOW {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'yellow'
-        }
-
-    },
-
-    ORANGE {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'orange'
-        }
-
-    },
-
-    RED {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'red'
-        }
-
-    },
-
-    BLUE {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'blue'
-        }
-
-    },
-
-    LIGHT_GREY {
-
-        @Override
-        @NonCPS
-        String toString() {
-            return 'lightgrey'
-        }
-
+        return Math.floor(total / averages.size() * 100)
     }
 
 }

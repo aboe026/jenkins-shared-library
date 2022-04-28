@@ -1,0 +1,11 @@
+.gradle
+
+# Ignore Gradle build output directory
+build
+bin
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Avoid ignore Gradle wrappper properties
+!gradle-wrapper.properties
