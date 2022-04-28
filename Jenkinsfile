@@ -58,12 +58,12 @@ node {
         println 'Exception was caught in try block of jenkins job.'
         println err
     } finally {
-        //if (uploadBadges) {
-        badges.uploadBuildResult(
-            repo: 'jenkins-shared-library',
-            branch: env.BRANCH_NAME
-        )
-        // }
+        if (uploadBadges) {
+            badges.uploadBuildResult(
+                repo: 'jenkins-shared-library',
+                branch: env.BRANCH_NAME
+            )
+        }
         stage('Cleanup') {
             try {
                 sh "rm -rf ${workDir}"
