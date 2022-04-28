@@ -67,7 +67,6 @@ class ShieldsIoBadges implements Serializable {
      *     if (env.BRANCH_NAME == 'main') {
      *         badges.uploadBuildResult(
      *             repo: 'data-structures',
-     *             status: currentBuild.currentResult,
      *             branch: env.BRANCH_NAME
      *         )
      *     }
@@ -83,9 +82,7 @@ class ShieldsIoBadges implements Serializable {
                 Result.UNSTABLE.toString(),
             ])
         }
-        this.steps.println("TEST this.steps.currentBuild.result: '${this.steps.currentBuild.result}'")
-        this.steps.println("TEST this.steps.currentBuild.currentResult: '${this.steps.currentBuild.currentResult}'")
-        String result = ParameterValidator.defaultIfNotSet(params, 'result', this.steps.currentBuild.result)
+        String result = ParameterValidator.defaultIfNotSet(params, 'result', this.steps.currentBuild.currentResult)
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         String message = ''
         String color = ''

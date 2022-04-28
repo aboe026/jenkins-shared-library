@@ -186,7 +186,7 @@ class ShieldsIoBadges__uploadBuildResultSpec extends Specification {
         given:
         steps = Spy(WorkflowScript)
         steps.getCurrentBuild() >> [
-            result: 'SUCCESS'
+            currentResult: 'SUCCESS'
         ]
 
         when:
@@ -217,7 +217,7 @@ class ShieldsIoBadges__uploadBuildResultSpec extends Specification {
         given:
         steps = Spy(WorkflowScript)
         steps.getCurrentBuild() >> [
-            result: 'UNSTABLE'
+            currentResult: 'UNSTABLE'
         ]
 
         when:
@@ -248,7 +248,7 @@ class ShieldsIoBadges__uploadBuildResultSpec extends Specification {
         given:
         steps = Spy(WorkflowScript)
         steps.getCurrentBuild() >> [
-            result: 'NOT_BUILT'
+            currentResult: 'NOT_BUILT'
         ]
 
         when:
@@ -279,7 +279,7 @@ class ShieldsIoBadges__uploadBuildResultSpec extends Specification {
         given:
         steps = Spy(WorkflowScript)
         steps.getCurrentBuild() >> [
-            result: 'ABORTED'
+            currentResult: 'ABORTED'
         ]
 
         when:
@@ -310,7 +310,7 @@ class ShieldsIoBadges__uploadBuildResultSpec extends Specification {
         given:
         steps = Spy(WorkflowScript)
         steps.getCurrentBuild() >> [
-            result: 'FAILURE'
+            currentResult: 'FAILURE'
         ]
 
         when:
@@ -341,7 +341,7 @@ class ShieldsIoBadges__uploadBuildResultSpec extends Specification {
         given:
         steps = Spy(WorkflowScript)
         steps.getCurrentBuild() >> [
-            result: 'FAILURE'
+            currentResult: 'FAILURE'
         ]
 
         when:

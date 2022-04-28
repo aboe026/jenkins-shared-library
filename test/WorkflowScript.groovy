@@ -8,13 +8,15 @@ import org.jenkinsci.plugins.workflow.cps.CpsScript
   */
 abstract class WorkflowScript extends CpsScript { // groovylint-disable-line AbstractClassWithoutAbstractMethod
 
-    Map env = [
-        BUILD_URL: 'https://mock-workflow-script:440/build/url'
-    ]
+    Map getEnv() {
+        return [
+            BUILD_URL: 'https://mock-workflow-script:440/build/url'
+        ]
+    }
 
     Map getCurrentBuild() {
         return [
-            result: 'to be mocked'
+            currentResult: 'to be mocked'
         ]
     }
 
