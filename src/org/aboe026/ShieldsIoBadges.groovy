@@ -10,6 +10,7 @@ class ShieldsIoBadges implements Serializable {
 
     private static final long serialVersionUID = 1L
     private final Script steps
+    private final String repo
     private final String setBadgeResultsJob
 
     // Not allowed, need script steps for method executions
@@ -26,7 +27,7 @@ class ShieldsIoBadges implements Serializable {
      *      def badges = new ShieldsIoBadges(this)
      */
     ShieldsIoBadges(Script steps) {
-        this(steps, '/shields.io-badge-results/set-badge-result')
+        this(steps, null)
     }
 
     /** Can be instantiated in a Jenkinsfile like:
@@ -35,13 +36,18 @@ class ShieldsIoBadges implements Serializable {
      *
      *      import org.aboe026.ShieldsIoBadges
      *
-     *      def badges = new ShieldsIoBadges(this, '/path/in/jenkins/to/set-badge-result-job')
+     *      def badges = new ShieldsIoBadges(this, 'repo-name')
+     *
+     *      or
+     *
+     *      def badges = new ShieldsIoBadges(this, 'repo-name', '/path/in/jenkins/to/set-badge-result-job')
      */
-    ShieldsIoBadges(Script steps, String setBadgeResultsJob) {
+    ShieldsIoBadges(Script steps, String repo, String setBadgeResultsJob = '/shields.io-badge-results/set-badge-result') {
         if (!steps) {
             throw new Exception("Invalid first parameter \"${steps}\" passed to \"ShieldsIoBadges\" constructor: Must be non-null Script object.")
         }
         this.steps = steps
+        this.repo = repo
         this.setBadgeResultsJob = setBadgeResultsJob ?: '/shields.io-badge-results/set-badge-result'
     }
 
@@ -53,12 +59,14 @@ class ShieldsIoBadges implements Serializable {
      *
      *      def badges = new ShieldsIoBadges(
      *          steps: this,
+     *          repo: 'repo-name',
      *          setBadgeResultsJob: '/path/in/jenkins/to/set-badge-result-job'
      *      )
      */
     ShieldsIoBadges(Map params) {
         ParameterValidator.required(params, 'ShieldsIoBadges', 'steps', true)
         this.steps = params.steps
+        this.repo = params.repo
         this.setBadgeResultsJob = ParameterValidator.defaultIfNotSet(params, 'setBadgeResultsJob', '/shields.io-badge-results/set-badge-result')
     }
 
@@ -67,13 +75,14 @@ class ShieldsIoBadges implements Serializable {
      *     if (env.BRANCH_NAME == 'main') {
      *         badges.uploadBuildResult(
      *             repo: 'data-structures',
-     *             branch: env.BRANCH_NAME
+     *             branch: env.BRANCH_NAME,
+     *             result: currentBuild.currentResult
      *         )
      *     }
      */
     void uploadBuildResult(Map params) {
-        ParameterValidator.required(params, 'uploadBuildResult', 'repo')
-        if (params.result) {
+        String repo = ParameterValidator.requiredWithConstructorFallback(this, params, 'uploadBuildResult', 'repo')
+        if (params?.result) {
             ParameterValidator.enumerable(params, 'uploadBuildResult', 'result', [
                 Result.ABORTED.toString(),
                 Result.FAILURE.toString(),
@@ -111,7 +120,7 @@ class ShieldsIoBadges implements Serializable {
         this.steps.build(
             job: this.setBadgeResultsJob,
             parameters: [
-                this.steps.string(name: 'repo', value: params.repo),
+                this.steps.string(name: 'repo', value: repo),
                 this.steps.string(name: 'branch', value: branch),
                 this.steps.string(name: 'label', value: 'build'),
                 this.steps.string(name: 'message', value: message),
@@ -145,7 +154,7 @@ class ShieldsIoBadges implements Serializable {
         uploadCoverageResult(params, 'uploadCoberturaCoverageResult', '/cobertura/api/json?depth=2', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
             List<BigDecimal> averages = []
             Closure addCategory = { JSONObject result ->
-                if (!this.isCategoryIgnored(params.ignoreCategories, result.name)) {
+                if (!this.isCategoryIgnored(params?.ignoreCategories, result.name)) {
                     averages.add(result.numerator / result.denominator)
                 }
             }
@@ -182,7 +191,7 @@ class ShieldsIoBadges implements Serializable {
             Closure addCategory = { JacocoCategory category ->
                 JSONObject categoryObject = json[category.toString()]
                 if (categoryObject) {
-                    if (!this.isCategoryIgnored(params.ignoreCategories, category.toString())) {
+                    if (!this.isCategoryIgnored(params?.ignoreCategories, category.toString())) {
                         averages.add(categoryObject.covered / categoryObject.total)
                     }
                 }
@@ -198,7 +207,7 @@ class ShieldsIoBadges implements Serializable {
     }
 
     private void uploadCoverageResult(Map params, String method, String resultsUrlPath, Closure getPercentageFromJson) {
-        ParameterValidator.required(params, method, 'repo')
+        String repo = ParameterValidator.requiredWithConstructorFallback(this, params, method, 'repo')
         String buildUrl = ParameterValidator.defaultIfNotSet(params, 'buildUrl', this.steps.env.BUILD_URL)
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
         String credentialsId = ParameterValidator.defaultIfNotSet(params, 'credentialsId', 'JENKINS_CREDENTIALS')
@@ -239,7 +248,7 @@ class ShieldsIoBadges implements Serializable {
         this.steps.build(
             job: this.setBadgeResultsJob,
             parameters: [
-                this.steps.string(name: 'repo', value: params.repo),
+                this.steps.string(name: 'repo', value: repo),
                 this.steps.string(name: 'branch', value: branch),
                 this.steps.string(name: 'label', value: 'coverage'),
                 this.steps.string(name: 'message', value: "${percentage}%"),
