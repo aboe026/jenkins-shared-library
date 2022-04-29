@@ -8,7 +8,7 @@ node {
     def lintImage = 'nvuillam/npm-groovy-lint'
     def gradleImage = 'gradle:7.4'
     def exceptionThrown = false
-    def badges = new ShieldsIoBadges(this)
+    def badges = new ShieldsIoBadges(this, 'jenkins-shared-library')
     def uploadBadges = env.BRANCH_NAME == 'main'
 
     try {
@@ -43,7 +43,6 @@ node {
                             )
                             if (uploadBadges) {
                                 badges.uploadJacocoCoverageResult(
-                                    repo: 'jenkins-shared-library',
                                     branch: env.BRANCH_NAME,
                                     ignoreCategories: ['instructionCoverage']
                                 )
@@ -60,7 +59,6 @@ node {
     } finally {
         if (uploadBadges) {
             badges.uploadBuildResult(
-                repo: 'jenkins-shared-library',
                 branch: env.BRANCH_NAME
             )
         }

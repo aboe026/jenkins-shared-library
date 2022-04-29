@@ -18,6 +18,18 @@ class ParameterValidator {
     }
 
     @NonCPS
+    static String requiredWithConstructorFallback(Object obj, Map params, String methodName, String propertyName) {
+        String value = params && params[propertyName] ? params[propertyName] : obj[propertyName]
+        if (!value) {
+            throw new Exception(
+                "Invalid parameter passed to \"${methodName}\" method: " +
+                "Must be Map with at least \"${propertyName}\" property defined or have \"${propertyName}\" passed into \"${obj.getClass().getSimpleName()}\" constructor."
+            )
+        }
+        return value
+    }
+
+    @NonCPS
     static void enumerable(Map params, String methodName, String propertyName, List<String> allowedValues) {
         if (!allowedValues) {
             throw new Exception("Invalid parameter \"allowedValues\" for method \"enumerable\" called by method \"${methodName}\":  Must be non-empty array.")

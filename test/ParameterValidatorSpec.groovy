@@ -123,6 +123,55 @@ class ParameterValidator__requiredSpec extends Specification {
 
 }
 
+class ParameterValidator__requiredWithConstructorFallbackSpec extends Specification {
+
+    def 'If params null and not defined by constructor, throws exception'() {
+        when:
+        ParameterValidator.requiredWithConstructorFallback([:], null, 'hello', 'foo')
+
+        then:
+        def exception = thrown(Exception)
+        exception.message ==
+            'Invalid parameter passed to "hello" method: Must be Map with at least "foo" property defined or have "foo" passed into "LinkedHashMap" constructor.'
+    }
+
+    def 'If params empty and not defined by constructor, throws exception'() {
+        when:
+        ParameterValidator.requiredWithConstructorFallback([:], [:], 'hello', 'foo')
+
+        then:
+        def exception = thrown(Exception)
+        exception.message ==
+            'Invalid parameter passed to "hello" method: Must be Map with at least "foo" property defined or have "foo" passed into "LinkedHashMap" constructor.'
+    }
+
+    def 'If params does not contain property and not defined by constructor, throws exception'() {
+        when:
+        ParameterValidator.requiredWithConstructorFallback([:], [ world: 'bar' ], 'hello', 'foo')
+
+        then:
+        def exception = thrown(Exception)
+        exception.message ==
+            'Invalid parameter passed to "hello" method: Must be Map with at least "foo" property defined or have "foo" passed into "LinkedHashMap" constructor.'
+    }
+
+    def 'If params contains property and not defined by constructor, return params property'() {
+        expect:
+        ParameterValidator.requiredWithConstructorFallback([:], [ foo: 'bar' ], 'hello', 'foo') == 'bar'
+    }
+
+    def 'If params contains property and defined by constructor, return params property'() {
+        expect:
+        ParameterValidator.requiredWithConstructorFallback([ foo: 'world' ], [ foo: 'bar' ], 'hello', 'foo') == 'bar'
+    }
+
+    def 'If params does not contain property and defined by constructor, return constructor property'() {
+        expect:
+        ParameterValidator.requiredWithConstructorFallback([ foo: 'bar' ], [:], 'hello', 'foo') == 'bar'
+    }
+
+}
+
 class ParameterValidator__enumerableSpec extends Specification {
 
     def 'If allowed null, throws exception'() {
