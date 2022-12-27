@@ -58,6 +58,10 @@ class Docker implements Serializable {
         ).trim()
         this.steps.println("TEST containerString: '${containerString}'")
         JSONObject container = this.steps.readJSON text: containerString
+        this.steps.println('TEST container:')
+        this.steps.println(container)
+        this.steps.println('TEST container[0]:')
+        this.steps.println(container[0])
         container[0].Mounts.each { mount ->
             if (mount.Destination == mountDestination) {
                 mountSource = mount.Source.replaceAll('\\\\', '\\\\\\\\')
@@ -71,11 +75,11 @@ class Docker implements Serializable {
      *     def dockerVolumesToDeleteCsv = docker.getContainerVolumes("${uniqueName}-database-1")
      */
     String getContainerVolumes(String containerName) {
-        String containerString = sh(
+        String containerString = this.steps.sh(
             script: "docker inspect $containerName",
             returnStdout: true
         ).trim()
-        JSONObject container = readJSON text: containerString
+        JSONObject container = this.steps.readJSON text: containerString
         String[] volumeNames = []
         container[0].Mounts.each { mount ->
             if (mount.Type == 'volume') {
