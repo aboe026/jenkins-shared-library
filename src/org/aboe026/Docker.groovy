@@ -52,9 +52,9 @@ class Docker implements Serializable {
         String containerString = this.steps.sh(
             script: "docker inspect ${jenkinsContainerName}",
             returnStdout: true
-        )
+        ).trim()
         JSONObject container = this.steps.readJSON text: containerString
-        container[0].Mounts.each { mount ->
+        container.Mounts.each { mount ->
             if (mount.Destination == mountDestination) {
                 mountSource = mount.Source.replaceAll('\\\\', '\\\\\\\\')
             }
@@ -70,10 +70,10 @@ class Docker implements Serializable {
         String containerString = this.steps.sh(
             script: "docker inspect $containerName",
             returnStdout: true
-        )
+        ).trim()
         JSONObject container = this.steps.readJSON text: containerString
         String[] volumeNames = []
-        container[0].Mounts.each { mount ->
+        container.Mounts.each { mount ->
             if (mount.Type == 'volume') {
                 volumeNames.push(mount.Name)
             }
