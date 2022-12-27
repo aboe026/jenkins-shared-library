@@ -48,11 +48,15 @@ class Docker implements Serializable {
      *     def mountDir = docker.getHostMountDir(workDir)
      */
     String getHostMountDir(String workDir, String jenkinsContainerName = 'cicd-jenkins-1', String mountDestination = '/var/jenkins_home') {
+        this.steps.println("TEST workDir: '${workDir}'")
+        this.steps.println("TEST jenkinsContainerName: '${jenkinsContainerName}'")
+        this.steps.println("TEST mountDestination: '${mountDestination}'")
         String mountSource = ''
         String containerString = this.steps.sh(
             script: "docker inspect ${jenkinsContainerName}",
             returnStdout: true
         ).trim()
+        this.steps.println("TEST containerString: '${containerString}'")
         JSONObject container = this.steps.readJSON text: containerString
         container[0].Mounts.each { mount ->
             if (mount.Destination == mountDestination) {
