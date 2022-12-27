@@ -64,21 +64,21 @@ class DockerUtil implements Serializable {
 
     /* Can be called in Jenkinsfile like:
      *
-     *     def dockerVolumesToDeleteCsv = dockerUtil.getContainerVolumes("${uniqueName}-database-1")
+     *     def dockerVolumesToDelete = dockerUtil.getContainerVolumes("${uniqueName}-database-1")
      */
-    String getContainerVolumes(String containerName) {
+    List<String> getContainerVolumes(String containerName) {
         String containerString = this.steps.sh(
             script: "docker inspect $containerName",
             returnStdout: true
         ).trim()
         JSONObject container = this.steps.readJSON text: containerString
-        String[] volumeNames = []
+        List<String> volumeNames = []
         container.Mounts.each { mount ->
             if (mount.Type == 'volume') {
                 volumeNames.add(mount.Name)
             }
         }
-        return volumeNames.join(',')
+        return volumeNames
     }
 
 }
