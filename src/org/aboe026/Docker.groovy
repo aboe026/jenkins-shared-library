@@ -62,6 +62,8 @@ class Docker implements Serializable {
         this.steps.println(container)
         this.steps.println('TEST container[0]:')
         this.steps.println(container[0])
+        this.steps.println('TEST container.Mounts:')
+        this.steps.println(container.Mounts)
         container[0].Mounts.each { mount ->
             if (mount.Destination == mountDestination) {
                 mountSource = mount.Source.replaceAll('\\\\', '\\\\\\\\')
