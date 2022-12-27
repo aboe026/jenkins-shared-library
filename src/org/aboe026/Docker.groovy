@@ -70,7 +70,7 @@ class Docker implements Serializable {
         String containerString = this.steps.sh(
             script: "docker inspect $containerName",
             returnStdout: true
-        ).trim()
+        )
         JSONObject container = this.steps.readJSON text: containerString
         String[] volumeNames = []
         container[0].Mounts.each { mount ->
