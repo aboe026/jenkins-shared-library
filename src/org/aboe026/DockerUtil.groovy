@@ -75,7 +75,7 @@ class DockerUtil implements Serializable {
         String[] volumeNames = []
         container.Mounts.each { mount ->
             if (mount.Type == 'volume') {
-                volumeNames.push(mount.Name)
+                volumeNames.add(mount.Name)
             }
         }
         return volumeNames.join(',')
