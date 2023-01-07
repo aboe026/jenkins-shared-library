@@ -34,4 +34,8 @@ abstract class WorkflowScript extends CpsScript { // groovylint-disable-line Abs
         return JSONObject.fromObject(map.text)
     }
 
+    String sh(Map map) { // groovylint-disable-line UnusedMethodParameter
+        return 'to be mocked'
+    }
+
 }
