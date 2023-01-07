@@ -7,7 +7,7 @@ import com.cloudbees.groovy.cps.NonCPS
 class ParameterValidator {
 
     @NonCPS
-    static void required(Map params, String methodName, String propertyName, boolean constructor = false) {
+    static String required(Map params, String methodName, String propertyName, boolean constructor = false) {
         String type = constructor ? 'constructor' : 'method'
         if (!params) {
             throw new Exception("Invalid parameter \"null\" passed to \"${methodName}\" ${type}: Must be Map with at least \"${propertyName}\" property defined.")
@@ -15,6 +15,7 @@ class ParameterValidator {
         if (params[propertyName] == null) {
             throw new Exception("Invalid parameter passed to \"${methodName}\" ${type}: Must have property \"${propertyName}\" with non-null value.")
         }
+        return params[propertyName]
     }
 
     @NonCPS
