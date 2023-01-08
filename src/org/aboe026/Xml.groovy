@@ -1,6 +1,5 @@
 package org.aboe026
 
-import com.cloudbees.groovy.cps.NonCPS
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.XmlUtil
 
@@ -49,6 +48,7 @@ class Xml {
      *
      *     import org.aboe026.Xml
      *
+     *     def xml = new Xml(this)
      *     def fileName = 'test.xml'
      *     writeFile file: fileName, text: '''<?xml version="1.0" encoding="UTF-8" ?>
      *         |    <testsuite
@@ -84,8 +84,8 @@ class Xml {
      *     '''.stripMargin()
      *
      *     def unstableTests = []
-     *     Xml.transform(fileName) { xml ->
-     *         xml.each { testsuite ->
+     *     xml.transform(fileName) { root ->
+     *         root.each { testsuite ->
      *             testsuite.testcase.each { testcase ->
      *                 def unstable = false
      *                 def testcaseClass = testcase['@classname'].text()
@@ -108,9 +108,11 @@ class Xml {
     void transform(String filePath, Closure transformation) {
         String text = this.steps.readFile(file: filePath)
         GPathResult xml = new XmlSlurper().parseText(text)
-        // GPathResult transformed = transformation(xml)
-        transformation(xml) // pass by reference will update xml?
-        new XmlUtil().serialize(xml, new FileWriter(new File(filePath))) // groovylint-disable-line JavaIoPackageAccess
+        transformation(xml) // pass by reference will update xml
+        this.steps.writeFile(
+            file: filePath,
+            text: new XmlUtil().serialize(xml)
+        )
     }
 
 }
