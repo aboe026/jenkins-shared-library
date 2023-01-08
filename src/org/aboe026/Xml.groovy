@@ -122,10 +122,10 @@ class Xml {
         this.steps.println 'TEST 4'
         // String transformedText = this.performTransformation(text, transformation)
         // this.steps.println transformedText
-        this.steps.writeFile(
-            file: filePath,
-            text: serialized
-        )
+        // this.steps.writeFile(
+        //     file: filePath,
+        //     text: serialized
+        // )
     }
 
     @NonCPS
