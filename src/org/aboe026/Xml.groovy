@@ -108,9 +108,12 @@ class Xml {
      */
     void transform(String filePath, Closure transformation) {
         String text = this.steps.readFile(file: filePath)
+        this.steps.println text
+        String transformedText = this.performTransformation(text, transformation)
+        this.steps.println transformedText
         this.steps.writeFile(
             file: filePath,
-            text: this.performTransformation(text, transformation)
+            text: transformedText
         )
     }
 
