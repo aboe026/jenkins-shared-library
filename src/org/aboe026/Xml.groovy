@@ -109,19 +109,39 @@ class Xml {
     void transform(String filePath, Closure transformation) {
         String text = this.steps.readFile(file: filePath)
         this.steps.println text
-        String transformedText = this.performTransformation(text, transformation)
+        this.steps.println 'TEST 0'
+        GPathResult deserialized = this.deserialize(text)
+        this.steps.println 'TEST 1'
+        this.steps.println "TEST deserialized: '${deserialized}'"
+        transformation(deserialized)
+        this.steps.println 'TEST 2'
+        String serialized = this.serialize(deserialized)
+        this.steps.println 'TEST 3'
+        this.steps.println "TEST serialized: '${serialized}'"
+        this.steps.println 'TEST 4'
+        // String transformedText = this.performTransformation(text, transformation)
         this.steps.println transformedText
         this.steps.writeFile(
             file: filePath,
-            text: transformedText
+            text: serialized
         )
     }
 
     @NonCPS
-    private String performTransformation(String xmlText, Closure transformation) {
-        GPathResult xml = new XmlSlurper().parseText(xmlText)
-        // transformation(xml) // pass by reference will update xml
+    private GPathResult deserialize(String xml) {
+        return new XmlSlurper().parseText(xml)
+    }
+
+    @NonCPS
+    private String serialize(GPathResult xml) {
         return new XmlUtil().serialize(xml)
     }
+
+    // @NonCPS
+    // private String performTransformation(String xmlText, Closure transformation) {
+    //     GPathResult xml = new XmlSlurper().parseText(xmlText)
+    //     // transformation(xml) // pass by reference will update xml
+    //     return new XmlUtil().serialize(xml)
+    // }
 
 }
