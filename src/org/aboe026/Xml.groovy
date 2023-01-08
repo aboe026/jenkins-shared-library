@@ -8,6 +8,41 @@ import groovy.xml.XmlUtil
   */
 class Xml {
 
+    private static final long serialVersionUID = 1L
+    private final Script steps
+
+    // Not allowed, need script steps for method executions
+    Xml() {
+        throw new Exception('Empty constructor not valid for Xml class. Must pass script steps (aka "this") as either a parameter (this) or in a Map (steps: this).')
+    }
+
+    /** Can be instantiated in a Jenkinsfile like:
+     *
+     *      @Library('aboe026') _ // groovylint-disable-line VariableName, UnusedVariable
+     *
+     *      import org.aboe026.Xml
+     *
+     *      def xml = new Xml(this)
+     */
+    Xml(Script steps) {
+        this.steps = steps
+    }
+
+    /** Can be instantiated in a Jenkinsfile like:
+     *
+     *      @Library('aboe026') _ // groovylint-disable-line VariableName, UnusedVariable
+     *
+     *      import org.aboe026.Xml
+     *
+     *      def xml = new Xml(
+     *          steps: this
+     *      )
+     */
+    Xml(Map params) {
+        ParameterValidator.required(params, 'Xml', 'steps', true)
+        this.steps = params.steps
+    }
+
     /* Can be called in Jenkinsfile like:
      *
      *     @Library('aboe026') _ // groovylint-disable-line VariableName, UnusedVariable
@@ -70,8 +105,9 @@ class Xml {
      *         }
      *     }
      */
-    static void transform(String filePath, Closure transformation) {
-        GPathResult xml = new XmlSlurper().parse(filePath)
+    void transform(String filePath, Closure transformation) {
+        String text = this.steps.readFile(file: filePath)
+        GPathResult xml = new XmlSlurper().parseText(text)
         // GPathResult transformed = transformation(xml)
         transformation(xml) // pass by reference will update xml?
         new XmlUtil().serialize(xml, new FileWriter(new File(filePath))) // groovylint-disable-line JavaIoPackageAccess
