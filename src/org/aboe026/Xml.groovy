@@ -73,7 +73,12 @@ class Xml {
      *     }
      */
     static String transform(String text, Closure transformation) {
-        GPathResult xml = new XmlSlurper().parseText(text)
+        GPathResult xml
+        try {
+            xml = new XmlSlurper().parseText(text)
+        } catch (Exception ex) { // groovylint-disable-line CatchException
+            throw new Exception("Error parsing '${text}' as XML: ${ex.getMessage()}")
+        }
         transformation(xml) // pass by reference will update xml
         return new XmlUtil().serialize(xml)
     }
