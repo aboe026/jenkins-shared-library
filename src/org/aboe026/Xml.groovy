@@ -1,5 +1,6 @@
 package org.aboe026
 
+import com.cloudbees.groovy.cps.NonCPS
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.XmlUtil
 
@@ -107,12 +108,17 @@ class Xml {
      */
     void transform(String filePath, Closure transformation) {
         String text = this.steps.readFile(file: filePath)
-        GPathResult xml = new XmlSlurper().parseText(text)
-        transformation(xml) // pass by reference will update xml
         this.steps.writeFile(
             file: filePath,
-            text: new XmlUtil().serialize(xml)
+            text: this.performTransformation(text, transformation)
         )
+    }
+
+    @NonCPS
+    private String performTransformation(String xmlText, Closure transformation) {
+        GPathResult xml = new XmlSlurper().parseText(xmlText)
+        transformation(xml) // pass by reference will update xml
+        return new XmlUtil().serialize(xml)
     }
 
 }
