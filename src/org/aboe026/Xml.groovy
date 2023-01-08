@@ -120,7 +120,7 @@ class Xml {
     @NonCPS
     private String performTransformation(String xmlText, Closure transformation) {
         GPathResult xml = new XmlSlurper().parseText(xmlText)
-        transformation(xml) // pass by reference will update xml
+        // transformation(xml) // pass by reference will update xml
         return new XmlUtil().serialize(xml)
     }
 
