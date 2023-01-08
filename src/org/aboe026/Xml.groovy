@@ -70,7 +70,6 @@ class Xml {
      *         }
      *     }
      */
-    @NonCPS
     static void transform(String filePath, Closure transformation) {
         GPathResult xml = new XmlSlurper().parse(filePath)
         // GPathResult transformed = transformation(xml)
