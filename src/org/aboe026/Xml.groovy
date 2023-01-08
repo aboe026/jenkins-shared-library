@@ -118,6 +118,7 @@ class Xml {
         String serialized = this.serialize(deserialized)
         this.steps.println 'TEST 3'
         this.steps.println "TEST serialized: '${serialized}'"
+        this.steps.println "TEST serialized.getClass(): '${serialized.getClass()}'"
         this.steps.println 'TEST 4'
         // String transformedText = this.performTransformation(text, transformation)
         // this.steps.println transformedText
