@@ -1,5 +1,6 @@
 /* groovylint-disable ClassNameSameAsFilename, ClassJavadoc, NoDef, VariableTypeRequired, MethodName, MethodReturnTypeRequired, JUnitPublicNonTestMethod */
 
+import org.aboe026.OsUtil
 import org.aboe026.Xml
 import spock.lang.Specification
 
@@ -26,24 +27,24 @@ class Xml__transformSpec extends Specification {
     }
 
     def 'If no closure, returns original XML'() {
-        String xml = '<?xml version="1.0" encoding="UTF-8"?><hello foo="bar"/>\r\n'
+        String xml = """<?xml version="1.0" encoding="UTF-8"?><hello foo="bar"/>${OsUtil.getLineEnding()}"""
 
         expect:
         Xml.transform(xml) { } == xml
     }
 
     def 'If closure modifies XML, modified XML returned'() {
-        String xml = '<?xml version="1.0" encoding="UTF-8"?><hello foo="bar"/>\r\n'
+        String xml = """<?xml version="1.0" encoding="UTF-8"?><hello foo="bar"/>${OsUtil.getLineEnding()}"""
 
         expect:
         Xml.transform(xml) { root ->
             root['@foo'] = 'world'
-        } == '<?xml version="1.0" encoding="UTF-8"?><hello foo="world"/>\r\n'
+        } == """<?xml version="1.0" encoding="UTF-8"?><hello foo="world"/>${OsUtil.getLineEnding()}"""
     }
 
     def 'If closure modifies external variable, modifications persist outside closure'() {
         def foos = []
-        String xml = '<?xml version="1.0" encoding="UTF-8"?><hello foo="bar"/>\r\n'
+        String xml = """<?xml version="1.0" encoding="UTF-8"?><hello foo="bar"/>${OsUtil.getLineEnding()}"""
 
         when:
         Xml.transform(xml) { root ->
