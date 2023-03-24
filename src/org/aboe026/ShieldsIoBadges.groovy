@@ -291,7 +291,7 @@ class ShieldsIoBadges implements Serializable {
                 this.steps.string(name: 'message', value: "${percentage}%"),
                 this.steps.string(name: 'color', value: color),
             ],
-            quietPeriod: 60,
+            quietPeriod: 0,
             wait: false
         )
     }
