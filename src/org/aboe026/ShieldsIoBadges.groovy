@@ -226,7 +226,7 @@ class ShieldsIoBadges implements Serializable {
                 String categoryObject = json.projectStatistics[category.toString()]
                 if (categoryObject) {
                     if (!this.isCategoryIgnored(params?.ignoreCategories, category.toString())) {
-                        averages.add(new BigDecimal(categoryObject.replace('%', '')))
+                        averages.add(new BigDecimal(categoryObject.replace('%', '')) / 100)
                     }
                 }
             }
