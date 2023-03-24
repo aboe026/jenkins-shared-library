@@ -206,6 +206,41 @@ class ShieldsIoBadges implements Serializable {
         })
     }
 
+    // TODO: test with jacoco project, make sure REST api response is same?
+    // TODO: test coverage
+    void uploadCodeCoverage(Map params) {
+        if (params && params.ignoreCategories) {
+            ParameterValidator.enumerable(params, 'uploadCodeCoverage', 'ignoreCategories', [
+                CodeCoverageCategory.BRANCH,
+                CodeCoverageCategory.CLASS,
+                CodeCoverageCategory.FILE,
+                CodeCoverageCategory.LINE,
+                CodeCoverageCategory.METHOD,
+                CodeCoverageCategory.MODULE,
+                CodeCoverageCategory.PACKAGE
+            ])
+        }
+        uploadCoverageResult(params, 'uploadCodeCoverage', '/coverage/api/json', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
+            List<BigDecimal> averages = []
+            Closure addCategory = { CodeCoverageCategory category ->
+                JSONObject categoryObject = json.projectStatistics[category.toString()]
+                if (categoryObject) {
+                    if (!this.isCategoryIgnored(params?.ignoreCategories, category.toString())) {
+                        averages.add(new BigDecimal(categoryObject.replace('%', '')))
+                    }
+                }
+            }
+            addCategory(CodeCoverageCategory.BRANCH)
+            addCategory(CodeCoverageCategory.CLASS)
+            addCategory(CodeCoverageCategory.FILE)
+            addCategory(CodeCoverageCategory.LINE)
+            addCategory(CodeCoverageCategory.METHOD)
+            addCategory(CodeCoverageCategory.MODULE)
+            addCategory(CodeCoverageCategory.PACKAGE)
+            return getAveragePercentage(averages)
+        })
+    }
+
     private void uploadCoverageResult(Map params, String method, String resultsUrlPath, Closure getPercentageFromJson) {
         String repo = ParameterValidator.requiredWithConstructorFallback(this, params, method, 'repo')
         String buildUrl = ParameterValidator.defaultIfNotSet(params, 'buildUrl', this.steps.env.BUILD_URL)
@@ -254,7 +289,7 @@ class ShieldsIoBadges implements Serializable {
                 this.steps.string(name: 'message', value: "${percentage}%"),
                 this.steps.string(name: 'color', value: color),
             ],
-            quietPeriod: 0,
+            quietPeriod: 60,
             wait: false
         )
     }
