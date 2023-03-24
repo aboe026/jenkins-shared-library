@@ -223,7 +223,7 @@ class ShieldsIoBadges implements Serializable {
         uploadCoverageResult(params, 'uploadCodeCoverage', '/coverage/api/json', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
             List<BigDecimal> averages = []
             Closure addCategory = { CodeCoverageCategory category ->
-                JSONObject categoryObject = json.projectStatistics[category.toString()]
+                String categoryObject = json.projectStatistics[category.toString()]
                 if (categoryObject) {
                     if (!this.isCategoryIgnored(params?.ignoreCategories, category.toString())) {
                         averages.add(new BigDecimal(categoryObject.replace('%', '')))
