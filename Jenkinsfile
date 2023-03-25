@@ -36,10 +36,15 @@ node {
                             sh './gradlew jacocoTestReport'
                         } finally {
                             junit testResults: 'build/test-results/test/TESTS-TestSuitesMerged.xml', allowEmptyResults: true
-                            jacoco(
-                                execPattern: 'build/jacoco/*.exec',
-                                classPattern: 'build/classes/groovy/main',
-                                sourcePattern: 'src'
+                            recordCoverage(
+                                skipPublishingChecks: true,
+                                sourceCodeRetention: 'EVERY_BUILD',
+                                tools: [
+                                    [
+                                        parser: 'JACOCO',
+                                        pattern: 'build\\reports\\jacoco\\test\\jacocoTestReport.xml'
+                                    ]
+                                ]
                             )
                             if (uploadBadges) {
                                 badges.uploadJacocoCoverageResult(

@@ -207,7 +207,7 @@ class ShieldsIoBadges implements Serializable {
     }
 
     // TODO: test with jacoco project, make sure REST api response is same?
-    // TODO: test coverage
+    // TODO: write tests to cover new functionality
     void uploadCodeCoverage(Map params) {
         if (params && params.ignoreCategories) {
             ParameterValidator.enumerable(params, 'uploadCodeCoverage', 'ignoreCategories', [
@@ -249,8 +249,6 @@ class ShieldsIoBadges implements Serializable {
 
         URL buildUrlObject = new URL(buildUrl)
         String coverageUrl = new URL(buildUrlObject.getProtocol(), buildUrlObject.getHost(), buildUrlObject.getPort(), buildUrlObject.getPath() + resultsUrlPath, null)
-
-        this.steps.println "coverageUrl: '${coverageUrl}'"
 
         ResponseContentSupplier response = this.steps.httpRequest(
             url: coverageUrl,
