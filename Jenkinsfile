@@ -1,5 +1,5 @@
 /* groovylint-disable NoDef, VariableTypeRequired */
-@Library('aboe026') _ // groovylint-disable-line VariableName, UnusedVariable
+@Library('aboe026@code-coverage-api-plugin') _ // groovylint-disable-line VariableName, UnusedVariable
 
 import org.aboe026.ShieldsIoBadges
 
