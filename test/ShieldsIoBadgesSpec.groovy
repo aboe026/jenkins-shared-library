@@ -1522,6 +1522,488 @@ class ShieldsIoBadges__uploadJacocoCoverageResultSpec extends Specification {
 
 }
 
+class ShieldsIoBadges__uploadCoverageResultSpec extends Specification {
+
+    def 'If no parameters, throws exception'() {
+        when:
+        new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadCoverageResult()
+
+        then:
+        def exception = thrown(Exception)
+        exception.message ==
+            'Invalid parameter passed to "uploadCoverageResult" method: ' +
+            'Must be Map with at least "repo" property defined or have "repo" passed into "ShieldsIoBadges" constructor.'
+    }
+
+    def 'If Map empty, throws exception'() {
+        when:
+        new ShieldsIoBadges(steps: Stub(WorkflowScript)).uploadCoverageResult([:])
+
+        then:
+        def exception = thrown(Exception)
+        exception.message ==
+            'Invalid parameter passed to "uploadCoverageResult" method: ' +
+            'Must be Map with at least "repo" property defined or have "repo" passed into "ShieldsIoBadges" constructor.'
+    }
+
+    def 'If Map with repo and 100 coverage, triggers build with brightgreen badge and defaults'() {
+        WorkflowScript steps
+
+        given:
+        steps = Spy(WorkflowScript)
+
+        when:
+        new ShieldsIoBadges(steps, 'foo').uploadCoverageResult()
+
+        then:
+        1 * steps.httpRequest { argument ->
+            argument == [
+                url: 'https://mock-workflow-script:440/build/url/coverage/api/json',
+                authentication: 'JENKINS_CREDENTIALS',
+                quiet: true
+            ]
+        } >> new ResponseContentSupplier(
+            '''{
+                "projectStatistics": {
+                    "branch": "100.00%",
+                    "line": "100.00%"
+                }
+            }''',
+            200
+        )
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'coverage'],
+                    [name: 'message', value: '100%'],
+                    [name: 'color', value: 'brightgreen']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
+
+    def 'If Map with repo and 90 coverage, triggers build with green badge and defaults'() {
+        WorkflowScript steps
+
+        given:
+        steps = Spy(WorkflowScript)
+
+        when:
+        new ShieldsIoBadges(steps, 'foo').uploadCoverageResult()
+
+        then:
+        1 * steps.httpRequest { argument ->
+            argument == [
+                url: 'https://mock-workflow-script:440/build/url/coverage/api/json',
+                authentication: 'JENKINS_CREDENTIALS',
+                quiet: true
+            ]
+        } >> new ResponseContentSupplier(
+            '''{
+                "projectStatistics": {
+                    "branch": "100.00%",
+                    "line": "80.00%"
+                }
+            }''',
+            200
+        )
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'coverage'],
+                    [name: 'message', value: '90%'],
+                    [name: 'color', value: 'green']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
+
+    def 'If Map with repo and 80 coverage, triggers build with yellowgreen badge and defaults'() {
+        WorkflowScript steps
+
+        given:
+        steps = Spy(WorkflowScript)
+
+        when:
+        new ShieldsIoBadges(steps, 'foo').uploadCoverageResult()
+
+        then:
+        1 * steps.httpRequest { argument ->
+            argument == [
+                url: 'https://mock-workflow-script:440/build/url/coverage/api/json',
+                authentication: 'JENKINS_CREDENTIALS',
+                quiet: true
+            ]
+        } >> new ResponseContentSupplier(
+            '''{
+                "projectStatistics": {
+                    "branch": "100.00%",
+                    "line": "60.00%"
+                }
+            }''',
+            200
+        )
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'coverage'],
+                    [name: 'message', value: '80%'],
+                    [name: 'color', value: 'yellowgreen']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
+
+    def 'If Map with repo and 70 coverage, triggers build with yellow badge and defaults'() {
+        WorkflowScript steps
+
+        given:
+        steps = Spy(WorkflowScript)
+
+        when:
+        new ShieldsIoBadges(steps, 'foo').uploadCoverageResult()
+
+        then:
+        1 * steps.httpRequest { argument ->
+            argument == [
+                url: 'https://mock-workflow-script:440/build/url/coverage/api/json',
+                authentication: 'JENKINS_CREDENTIALS',
+                quiet: true
+            ]
+        } >> new ResponseContentSupplier(
+            '''{
+                "projectStatistics": {
+                    "branch": "100.00%",
+                    "line": "40.00%"
+                }
+            }''',
+            200
+        )
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'coverage'],
+                    [name: 'message', value: '70%'],
+                    [name: 'color', value: 'yellow']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
+
+    def 'If Map with repo and 60 coverage, triggers build with orange badge and defaults'() {
+        WorkflowScript steps
+
+        given:
+        steps = Spy(WorkflowScript)
+
+        when:
+        new ShieldsIoBadges(steps, 'foo').uploadCoverageResult()
+
+        then:
+        1 * steps.httpRequest { argument ->
+            argument == [
+                url: 'https://mock-workflow-script:440/build/url/coverage/api/json',
+                authentication: 'JENKINS_CREDENTIALS',
+                quiet: true
+            ]
+        } >> new ResponseContentSupplier(
+            '''{
+                "projectStatistics": {
+                    "branch": "100.00%",
+                    "line": "20.00%"
+                }
+            }''',
+            200
+        )
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'coverage'],
+                    [name: 'message', value: '60%'],
+                    [name: 'color', value: 'orange']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
+
+    def 'If Map with repo and 50 coverage, triggers build with red badge and defaults'() {
+        WorkflowScript steps
+
+        given:
+        steps = Spy(WorkflowScript)
+
+        when:
+        new ShieldsIoBadges(steps, 'foo').uploadCoverageResult()
+
+        then:
+        1 * steps.httpRequest { argument ->
+            argument == [
+                url: 'https://mock-workflow-script:440/build/url/coverage/api/json',
+                authentication: 'JENKINS_CREDENTIALS',
+                quiet: true
+            ]
+        } >> new ResponseContentSupplier(
+            '''{
+                "projectStatistics": {
+                    "branch": "100.00%",
+                    "line": "00.00%"
+                }
+            }''',
+            200
+        )
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'coverage'],
+                    [name: 'message', value: '50%'],
+                    [name: 'color', value: 'red']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
+
+    def 'If Map with repo and 0 coverage, triggers build with red badge and defaults'() {
+        WorkflowScript steps
+
+        given:
+        steps = Spy(WorkflowScript)
+
+        when:
+        new ShieldsIoBadges(steps, 'foo').uploadCoverageResult()
+
+        then:
+        1 * steps.httpRequest { argument ->
+            argument == [
+                url: 'https://mock-workflow-script:440/build/url/coverage/api/json',
+                authentication: 'JENKINS_CREDENTIALS',
+                quiet: true
+            ]
+        } >> new ResponseContentSupplier(
+            '''{
+                "projectStatistics": {
+                    "branch": "00.00%",
+                    "line": "00.00%"
+                }
+            }''',
+            200
+        )
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'coverage'],
+                    [name: 'message', value: '0%'],
+                    [name: 'color', value: 'red']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
+
+    def 'If Map with repo and no coverage, triggers build with red badge and defaults'() {
+        WorkflowScript steps
+
+        given:
+        steps = Spy(WorkflowScript)
+
+        when:
+        new ShieldsIoBadges(steps, 'foo').uploadCoverageResult()
+
+        then:
+        1 * steps.httpRequest { argument ->
+            argument == [
+                url: 'https://mock-workflow-script:440/build/url/coverage/api/json',
+                authentication: 'JENKINS_CREDENTIALS',
+                quiet: true
+            ]
+        } >> new ResponseContentSupplier(
+            '{}',
+            200
+        )
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'coverage'],
+                    [name: 'message', value: '0%'],
+                    [name: 'color', value: 'red']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
+
+    def 'If no repo passed in constructor, picked up in map'() {
+        WorkflowScript steps
+
+        given:
+        steps = Spy(WorkflowScript)
+
+        when:
+        new ShieldsIoBadges(steps).uploadCoverageResult(
+            repo: 'foo'
+        )
+
+        then:
+        1 * steps.httpRequest { argument ->
+            argument == [
+                url: 'https://mock-workflow-script:440/build/url/coverage/api/json',
+                authentication: 'JENKINS_CREDENTIALS',
+                quiet: true
+            ]
+        } >> new ResponseContentSupplier(
+            '''{
+                "projectStatistics": {
+                    "branch": "100.00%",
+                    "line": "100.00%"
+                }
+            }''',
+            200
+        )
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'coverage'],
+                    [name: 'message', value: '100%'],
+                    [name: 'color', value: 'brightgreen']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
+
+    def 'If explicit values, defaults get overwritten'() {
+        WorkflowScript steps
+
+        given:
+        steps = Spy(WorkflowScript)
+
+        when:
+        new ShieldsIoBadges(steps, 'bar', '/non/default/job/path').uploadCoverageResult(
+            repo: 'foo',
+            branch: 'master',
+            credentialsId: 'SUPER_SECRET',
+            buildUrl: 'https://overwritten-build-url:444/custom/url'
+        )
+
+        then:
+        1 * steps.httpRequest { argument ->
+            argument == [
+                url: 'https://overwritten-build-url:444/custom/url/coverage/api/json',
+                authentication: 'SUPER_SECRET',
+                quiet: true
+            ]
+        } >> new ResponseContentSupplier(
+            '''{
+                "projectStatistics": {
+                    "branch": "100.00%",
+                    "line": "90.00%"
+                }
+            }''',
+            200
+        )
+        1 * steps.build { argument ->
+            argument == [
+                job: '/non/default/job/path',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'master'],
+                    [name: 'label', value: 'coverage'],
+                    [name: 'message', value: '95%'],
+                    [name: 'color', value: 'green']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
+
+    def 'If Map with ignoreCategories on bad coverage, triggers build with brightgreen badge and defaults'() {
+        WorkflowScript steps
+
+        given:
+        steps = Spy(WorkflowScript)
+
+        when:
+        new ShieldsIoBadges(steps, 'foo').uploadCoverageResult(
+            ignoreCategories: ['instruction']
+        )
+
+        then:
+        1 * steps.httpRequest { argument ->
+            argument == [
+                url: 'https://mock-workflow-script:440/build/url/coverage/api/json',
+                authentication: 'JENKINS_CREDENTIALS',
+                quiet: true
+            ]
+        } >> new ResponseContentSupplier(
+            '''{
+                "projectStatistics": {
+                    "branch": "100.00%",
+                    "line": "100.00%",
+                    "instruction": "20.00%"
+                }
+            }''',
+            200
+        )
+        1 * steps.build { argument ->
+            argument == [
+                job: '/shields.io-badge-results/set-badge-result',
+                parameters: [
+                    [name: 'repo', value: 'foo'],
+                    [name: 'branch', value: 'main'],
+                    [name: 'label', value: 'coverage'],
+                    [name: 'message', value: '100%'],
+                    [name: 'color', value: 'brightgreen']
+                ],
+                quietPeriod: 0,
+                wait: false
+            ]
+        }
+    }
+
+}
+
 class ShieldsIoBadges__isCategoryIgnoredSpec extends Specification {
 
     def 'If ignores null, returns false'() {

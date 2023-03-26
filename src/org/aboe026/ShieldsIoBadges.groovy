@@ -141,17 +141,12 @@ class ShieldsIoBadges implements Serializable {
      *     }
      */
     void uploadCoberturaCoverageResult(Map params) {
+        List<String> coverageCategories = EnumUtil.getValues(CoberturaCategory)
         if (params && params.ignoreCategories) {
-            ParameterValidator.enumerable(params, 'uploadCoberturaCoverageResult', 'ignoreCategories', [
-                CoberturaCategory.CLASSES,
-                CoberturaCategory.CONDITIONALS,
-                CoberturaCategory.FILES,
-                CoberturaCategory.LINES,
-                CoberturaCategory.METHODS,
-                CoberturaCategory.PACKAGES
-            ])
+            ParameterValidator.enumerable(params, 'uploadCoberturaCoverageResult', 'ignoreCategories', coverageCategories)
         }
-        uploadCoverageResult(params, 'uploadCoberturaCoverageResult', '/cobertura/api/json?depth=2', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
+        // groovylint-disable-next-line ClosureAsLastMethodParameter
+        getAndUploadCoverageResult(params, 'uploadCoberturaCoverageResult', '/cobertura/api/json?depth=2', { JSONObject json ->
             List<BigDecimal> averages = []
             Closure addCategory = { JSONObject result ->
                 if (!this.isCategoryIgnored(params?.ignoreCategories, result.name)) {
@@ -176,74 +171,60 @@ class ShieldsIoBadges implements Serializable {
      *     }
      */
     void uploadJacocoCoverageResult(Map params) {
+        List<String> coverageCategories = EnumUtil.getValues(JacocoCategory)
         if (params && params.ignoreCategories) {
-            ParameterValidator.enumerable(params, 'uploadJacocoCoverageResult', 'ignoreCategories', [
-                JacocoCategory.BRANCH_COVERAGE,
-                JacocoCategory.CLASS_COVERAGE,
-                JacocoCategory.COMPLEXITY_SCORE,
-                JacocoCategory.INSTRUCTION_COVERAGE,
-                JacocoCategory.LINE_COVERAGE,
-                JacocoCategory.METHOD_COVERAGE
-            ])
+            ParameterValidator.enumerable(params, 'uploadJacocoCoverageResult', 'ignoreCategories', coverageCategories)
         }
-        uploadCoverageResult(params, 'uploadJacocoCoverageResult', '/jacoco/api/json', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
+        getAndUploadCoverageResult(params, 'uploadJacocoCoverageResult', '/jacoco/api/json', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
             List<BigDecimal> averages = []
-            Closure addCategory = { JacocoCategory category ->
-                JSONObject categoryObject = json[category.toString()]
+            Closure addCategory = { String category ->
+                JSONObject categoryObject = json[category]
                 if (categoryObject) {
-                    if (!this.isCategoryIgnored(params?.ignoreCategories, category.toString())) {
+                    if (!this.isCategoryIgnored(params?.ignoreCategories, category)) {
                         averages.add(categoryObject.covered / categoryObject.total)
                     }
                 }
             }
-            addCategory(JacocoCategory.BRANCH_COVERAGE)
-            addCategory(JacocoCategory.CLASS_COVERAGE)
-            addCategory(JacocoCategory.COMPLEXITY_SCORE)
-            addCategory(JacocoCategory.INSTRUCTION_COVERAGE)
-            addCategory(JacocoCategory.LINE_COVERAGE)
-            addCategory(JacocoCategory.METHOD_COVERAGE)
+            coverageCategories.each { String coverageCategory ->
+                addCategory(coverageCategory)
+            }
             return getAveragePercentage(averages)
         })
     }
 
-    // TODO: test with jacoco project, make sure REST api response is same?
-    // TODO: write tests to cover new functionality
-    void uploadCodeCoverage(Map params) {
+    /* Can be called in Jenkinsfile like:
+     *
+     *     if (env.BRANCH_NAME == 'main') {
+     *         badges.uploadCoverageResult(
+     *             repo: 'data-structures',
+     *             branch: env.BRANCH_NAME,
+     *             ignoreCategories: ['instruction']
+     *         )
+     *     }
+     */
+    void uploadCoverageResult(Map params) {
+        List<String> coverageCategories = EnumUtil.getValues(CodeCoverageCategory)
         if (params && params.ignoreCategories) {
-            ParameterValidator.enumerable(params, 'uploadCodeCoverage', 'ignoreCategories', [
-                CodeCoverageCategory.BRANCH,
-                CodeCoverageCategory.CLASS,
-                CodeCoverageCategory.FILE,
-                CodeCoverageCategory.INSTRUCTION,
-                CodeCoverageCategory.LINE,
-                CodeCoverageCategory.METHOD,
-                CodeCoverageCategory.MODULE,
-                CodeCoverageCategory.PACKAGE
-            ])
+            ParameterValidator.enumerable(params, 'uploadCoverageResult', 'ignoreCategories', coverageCategories)
         }
-        uploadCoverageResult(params, 'uploadCodeCoverage', '/coverage/api/json', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
+        getAndUploadCoverageResult(params, 'uploadCoverageResult', '/coverage/api/json', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
             List<BigDecimal> averages = []
-            Closure addCategory = { CodeCoverageCategory category ->
-                String categoryObject = json.projectStatistics[category.toString()]
+            Closure addCategory = { String category ->
+                String categoryObject = json.projectStatistics?[category]
                 if (categoryObject) {
-                    if (!this.isCategoryIgnored(params?.ignoreCategories, category.toString())) {
+                    if (!this.isCategoryIgnored(params?.ignoreCategories, category)) {
                         averages.add(new BigDecimal(categoryObject.replace('%', '')) / 100)
                     }
                 }
             }
-            addCategory(CodeCoverageCategory.BRANCH)
-            addCategory(CodeCoverageCategory.CLASS)
-            addCategory(CodeCoverageCategory.FILE)
-            addCategory(CodeCoverageCategory.INSTRUCTION)
-            addCategory(CodeCoverageCategory.LINE)
-            addCategory(CodeCoverageCategory.METHOD)
-            addCategory(CodeCoverageCategory.MODULE)
-            addCategory(CodeCoverageCategory.PACKAGE)
+            coverageCategories.each { String coverageCategory ->
+                addCategory(coverageCategory)
+            }
             return getAveragePercentage(averages)
         })
     }
 
-    private void uploadCoverageResult(Map params, String method, String resultsUrlPath, Closure getPercentageFromJson) {
+    private void getAndUploadCoverageResult(Map params, String method, String resultsUrlPath, Closure getPercentageFromJson) {
         String repo = ParameterValidator.requiredWithConstructorFallback(this, params, method, 'repo')
         String buildUrl = ParameterValidator.defaultIfNotSet(params, 'buildUrl', this.steps.env.BUILD_URL)
         String branch = ParameterValidator.defaultIfNotSet(params, 'branch', 'main')
