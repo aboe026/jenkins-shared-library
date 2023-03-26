@@ -48,7 +48,7 @@ node {
                             )
                             // if (uploadBadges) {
                             if (true) { // groovylint-disable-line ConstantIfExpression
-                                badges.uploadCodeCoverage(
+                                badges.uploadCoverageResult(
                                     branch: env.BRANCH_NAME,
                                     ignoreCategories: ['instruction']
                                 )
