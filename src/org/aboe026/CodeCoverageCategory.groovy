@@ -7,6 +7,7 @@ enum CodeCoverageCategory {
     BRANCH('branch'),
     CLASS('class'),
     FILE('file'),
+    INSTRUCTION('instruction'),
     LINE('line'),
     METHOD('method'),
     MODULE('module'),
