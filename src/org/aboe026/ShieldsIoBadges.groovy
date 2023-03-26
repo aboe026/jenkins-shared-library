@@ -214,6 +214,7 @@ class ShieldsIoBadges implements Serializable {
                 CodeCoverageCategory.BRANCH,
                 CodeCoverageCategory.CLASS,
                 CodeCoverageCategory.FILE,
+                CodeCoverageCategory.INSTRUCTION,
                 CodeCoverageCategory.LINE,
                 CodeCoverageCategory.METHOD,
                 CodeCoverageCategory.MODULE,
@@ -233,6 +234,7 @@ class ShieldsIoBadges implements Serializable {
             addCategory(CodeCoverageCategory.BRANCH)
             addCategory(CodeCoverageCategory.CLASS)
             addCategory(CodeCoverageCategory.FILE)
+            addCategory(CodeCoverageCategory.INSTRUCTION)
             addCategory(CodeCoverageCategory.LINE)
             addCategory(CodeCoverageCategory.METHOD)
             addCategory(CodeCoverageCategory.MODULE)

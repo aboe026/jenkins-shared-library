@@ -46,10 +46,11 @@ node {
                                     ]
                                 ]
                             )
-                            if (uploadBadges) {
-                                badges.uploadJacocoCoverageResult(
+                            // if (uploadBadges) {
+                            if (true) { // groovylint-disable-line ConstantIfExpression
+                                badges.uploadCodeCoverage(
                                     branch: env.BRANCH_NAME,
-                                    ignoreCategories: ['instructionCoverage']
+                                    ignoreCategories: ['instruction']
                                 )
                             }
                         }
