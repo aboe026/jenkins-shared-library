@@ -153,8 +153,10 @@ class ShieldsIoBadges implements Serializable {
                     averages.add(result.numerator / result.denominator)
                 }
             }
-            json.results.elements.each { result ->
-                addCategory(result)
+            if (json?.results?.elements) {
+                json.results.elements.each { result ->
+                    addCategory(result)
+                }
             }
             return getAveragePercentage(averages)
         })
@@ -185,8 +187,10 @@ class ShieldsIoBadges implements Serializable {
                     }
                 }
             }
-            coverageCategories.each { String coverageCategory ->
-                addCategory(coverageCategory)
+            if (json) {
+                coverageCategories.each { String coverageCategory ->
+                    addCategory(coverageCategory)
+                }
             }
             return getAveragePercentage(averages)
         })
@@ -210,15 +214,17 @@ class ShieldsIoBadges implements Serializable {
         getAndUploadCoverageResult(params, 'uploadCoverageResult', '/coverage/api/json', { JSONObject json -> // groovylint-disable-line ClosureAsLastMethodParameter
             List<BigDecimal> averages = []
             Closure addCategory = { String category ->
-                String categoryObject = json.projectStatistics?[category]
+                String categoryObject = json.projectStatistics[category]
                 if (categoryObject) {
                     if (!this.isCategoryIgnored(params?.ignoreCategories, category)) {
                         averages.add(new BigDecimal(categoryObject.replace('%', '')) / 100)
                     }
                 }
             }
-            coverageCategories.each { String coverageCategory ->
-                addCategory(coverageCategory)
+            if (json?.projectStatistics) {
+                coverageCategories.each { String coverageCategory ->
+                    addCategory(coverageCategory)
+                }
             }
             return getAveragePercentage(averages)
         })
