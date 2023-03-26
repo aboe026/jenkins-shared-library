@@ -39,6 +39,11 @@ node {
                             recordCoverage(
                                 skipPublishingChecks: true,
                                 sourceCodeRetention: 'EVERY_BUILD',
+                                sourceDirectories: [
+                                    [
+                                        path: 'src'
+                                    ]
+                                ],
                                 tools: [
                                     [
                                         parser: 'JACOCO',
@@ -46,11 +51,10 @@ node {
                                     ]
                                 ]
                             )
-                            // if (uploadBadges) {
-                            if (true) { // groovylint-disable-line ConstantIfExpression
+                            if (uploadBadges) {
                                 badges.uploadCoverageResult(
                                     branch: env.BRANCH_NAME,
-                                    ignoreCategories: ['instruction']
+                                    ignoreCategories: ['method'] // for some reason it picks up that Enum value definitions are uncovered methods
                                 )
                             }
                         }
