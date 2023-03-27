@@ -36,15 +36,25 @@ node {
                             sh './gradlew jacocoTestReport'
                         } finally {
                             junit testResults: 'build/test-results/test/TESTS-TestSuitesMerged.xml', allowEmptyResults: true
-                            jacoco(
-                                execPattern: 'build/jacoco/*.exec',
-                                classPattern: 'build/classes/groovy/main',
-                                sourcePattern: 'src'
+                            recordCoverage(
+                                skipPublishingChecks: true,
+                                sourceCodeRetention: 'EVERY_BUILD',
+                                sourceDirectories: [
+                                    [
+                                        path: 'src'
+                                    ]
+                                ],
+                                tools: [
+                                    [
+                                        parser: 'JACOCO',
+                                        pattern: 'build\\reports\\jacoco\\test\\jacocoTestReport.xml'
+                                    ]
+                                ]
                             )
                             if (uploadBadges) {
-                                badges.uploadJacocoCoverageResult(
+                                badges.uploadCoverageResult(
                                     branch: env.BRANCH_NAME,
-                                    ignoreCategories: ['instructionCoverage']
+                                    ignoreCategories: ['method'] // for some reason it picks up that Enum value definitions are uncovered methods
                                 )
                             }
                         }
