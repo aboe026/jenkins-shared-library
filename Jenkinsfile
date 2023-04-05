@@ -53,8 +53,7 @@ node {
                             )
                             if (uploadBadges) {
                                 badges.uploadCoverageResult(
-                                    branch: env.BRANCH_NAME,
-                                    ignoreCategories: ['method'] // for some reason it picks up that Enum value definitions are uncovered methods
+                                    branch: env.BRANCH_NAME
                                 )
                             }
                         }
